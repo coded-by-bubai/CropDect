@@ -224,22 +224,23 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
       bool hasReject = false;
       
       final acceptKeywords = [
-        'plant', 'leaf', 'flower', 'tree', 'vegetation', 'grass', 'nature', 'petal', 'wood', 'branch', 'twig', 'stem', 'root', 'flora', 'botany',
-        'crop', 'agriculture', 'farm', 'produce', 'fruit', 'vegetable', 'food', 'harvest', 'seed',
-        'soil', 'dirt', 'ground', 'earth', 'land',
+        'plant', 'leaf', 'flower', 'tree', 'vegetation', 'grass', 'petal', 'branch', 'twig', 'stem', 'root', 'flora', 'botany',
+        'crop', 'agriculture', 'farm', 'produce', 'fruit', 'vegetable', 'harvest', 'seed',
+        'soil', 'dirt',
         'insect', 'bug', 'caterpillar', 'beetle', 'worm', 'moth', 'butterfly', 'arachnid', 'spider', 'fungus', 'mushroom',
-        'organism', 'green', 'terrestrial', 'vascular', 'macro', 'close-up', 'vein', 'pathology', 'disease', 'spot'
+        'pathology', 'disease'
       ];
 
       final rejectLabels = [
         'Cup', 'Mug', 'Bottle', 'Glass', 'Tableware', 'Drinkware', 'Plate', 'Bowl',
-        'Drawing', 'Art', 'Illustration', 'Poster', 'Painting', 'Sketch',
         'Computer', 'Monitor', 'Screen', 'Keyboard', 'Mobile phone', 'Laptop', 'Television', 'Camera', 'Tablet', 'Gadget', 'Telephone',
         'Vehicle', 'Car', 'Bicycle', 'Motorcycle', 'Truck', 'Bus', 'Airplane', 'Boat',
         'Clothing', 'Shoe', 'Footwear', 'Shirt', 'Pants', 'Dress', 'Hat', 'Glasses', 'Bag', 'Backpack',
         'Dog', 'Cat', 'Bird', 'Pet',
         'Toy', 'Tool', 'Book', 'Box', 'Clock', 'Watch', 'Jewelry',
-        'Person', 'Cake', 'Table', 'Document', 'Paper', 'Text', 'Letter', 'Newspaper'
+        'Person', 'Cake', 'Table', 'Woman', 'Man', 'Face', 'Boy', 'Girl', 'Human', 'Child', 'Selfie',
+        'Hair', 'Skin', 'Smile', 'Portrait', 'Lip', 'Eye', 'Nose', 'Head', 'Hand', 'Arm', 'Finger', 'Shoulder', 'Male', 'Female',
+        'Room', 'Wall', 'Furniture', 'Sitting', 'Standing', 'Walking', 'Leg', 'Foot'
       ];
       
       debugPrint('ML Kit Detected Labels: ${labels.map((e) => "${e.label} (${e.confidence})").toList()}');
@@ -268,8 +269,12 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
         }
       }
       
-      // It MUST contain a crop, AND it MUST NOT contain artificial objects like cups or drawings
-      return hasCrop && !hasReject;
+      // If it explicitly sees a plant, accept it immediately regardless of background objects!
+      // This prevents rejections when a leaf is placed on a table or held by a hand.
+      if (hasCrop) return true;
+      
+      // If no plant is clearly seen (like extreme closeups), only reject if it explicitly sees a prohibited object
+      return !hasReject;
     } catch (e) {
       debugPrint('ML Kit Error: $e');
       return true; // fail open in case of camera/MLKit errors

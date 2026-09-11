@@ -28,18 +28,25 @@ def load_model():
     if model is not None:
         return
         
-    model_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml', 'model.pt')
-    
     try:
-        # Recreate architecture
-        model = models.mobilenet_v2(weights=None)
-        model.classifier[1] = nn.Linear(model.last_channel, len(PLANTVILLAGE_CLASSES))
+        model_v2_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml', 'best_efficientnet_model.pt')
+        model_v1_path = os.path.join(os.path.dirname(__file__), '..', '..', 'ml', 'model.pt')
         
-        if os.path.exists(model_path):
-            model.load_state_dict(torch.load(model_path, map_location=device))
-            logger.info("Real ML Model loaded successfully.")
+        if os.path.exists(model_v2_path):
+            model = models.efficientnet_b0(weights=None)
+            num_ftrs = model.classifier[1].in_features
+            model.classifier[1] = nn.Linear(num_ftrs, len(PLANTVILLAGE_CLASSES))
+            model.load_state_dict(torch.load(model_v2_path, map_location=device))
+            logger.info("EfficientNet-B0 Model loaded successfully.")
         else:
-            logger.warning(f"Model file not found at {model_path}. Using untrained weights.")
+            model = models.mobilenet_v2(weights=None)
+            model.classifier[1] = nn.Linear(model.last_channel, len(PLANTVILLAGE_CLASSES))
+            
+            if os.path.exists(model_v1_path):
+                model.load_state_dict(torch.load(model_v1_path, map_location=device))
+                logger.info("Legacy MobileNetV2 Model loaded successfully.")
+            else:
+                logger.warning(f"No model file found. Using untrained weights.")
             
         model = model.to(device)
         model.eval()
