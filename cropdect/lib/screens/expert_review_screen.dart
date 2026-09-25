@@ -4,6 +4,7 @@ import '../theme.dart';
 import '../api_client.dart';
 import 'monitoring_history_screen.dart';
 import 'detection_result_screen.dart';
+import '../widgets/translated_text.dart';
 
 class ExpertReviewScreen extends StatefulWidget {
   final bool showBackButton;
@@ -154,7 +155,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                         child: const Icon(Icons.rate_review_rounded, color: AppTheme.primary, size: 20),
                       ),
                       const SizedBox(width: 10),
-                      Text(
+                      TranslatedText(
                         'Expert Validation Review',
                         style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.primary),
                       ),
@@ -195,7 +196,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            TranslatedText(
                               'AI Prediction',
                               style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurfaceVariant),
                             ),
@@ -230,7 +231,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                     color: _severityColor(severity).withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: Text(
+                                  child: TranslatedText(
                                     severity.toUpperCase(),
                                     style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: _severityColor(severity)),
                                   ),
@@ -240,12 +241,12 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                           ],
                         ),
                         const SizedBox(height: 4),
-                        Text(
+                        TranslatedText(
                           kbName,
                           style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                         ),
                         const SizedBox(height: 4),
-                        Text(
+                        TranslatedText(
                           'Confidence: $confidence% · Flagged for expert verification',
                           style: GoogleFonts.inter(fontSize: 11, color: Colors.orange.shade800),
                         ),
@@ -255,7 +256,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                   const SizedBox(height: 16),
 
                   // Expert Notes field
-                  Text(
+                  TranslatedText(
                     'Expert Agronomist Notes',
                     style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface),
                   ),
@@ -299,7 +300,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                             if (context.mounted) {
                               Navigator.pop(ctx);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Diagnosis successfully confirmed!')),
+                                const SnackBar(content: TranslatedText('Diagnosis successfully confirmed!')),
                               );
                               _loadAllData();
                             }
@@ -307,13 +308,13 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                             setModalState(() => isSubmitting = false);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error validating: $e')),
+                                SnackBar(content: TranslatedText('Error validating: $e')),
                               );
                             }
                           }
                         },
                         icon: const Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 20),
-                        label: Text(
+                        label: TranslatedText(
                           'Confirm AI Diagnosis',
                           style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: AppTheme.primary),
                         ),
@@ -336,7 +337,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                               _showCorrectionModal(item);
                             },
                             icon: const Icon(Icons.edit_note_rounded, size: 18, color: AppTheme.primary),
-                            label: Text(
+                            label: TranslatedText(
                               'Correct',
                               style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: AppTheme.primary, fontSize: 13),
                             ),
@@ -355,7 +356,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                               _showLabReferralModal(item);
                             },
                             icon: const Icon(Icons.biotech_rounded, size: 18, color: Colors.purple),
-                            label: Text(
+                            label: TranslatedText(
                               'Refer to Lab',
                               style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.purple, fontSize: 13),
                             ),
@@ -429,12 +430,12 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text(
+                    TranslatedText(
                       'Correct Crop Diagnosis',
                       style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.primary),
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    TranslatedText(
                       'AI diagnosed: ${item['label'] ?? item['diagnosis_type'] ?? 'Unknown'}',
                       style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                     ),
@@ -457,7 +458,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                   width: !useCustomCondition ? 2 : 1,
                                 ),
                               ),
-                              child: Text(
+                              child: TranslatedText(
                                 'From Knowledge Base',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.inter(
@@ -483,7 +484,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                   width: useCustomCondition ? 2 : 1,
                                 ),
                               ),
-                              child: Text(
+                              child: TranslatedText(
                                 'Custom Condition',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.inter(
@@ -500,7 +501,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
 
                     if (!useCustomCondition) ...[
                       // Search bar
-                      Text('Search Verified Condition', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+                      TranslatedText('Search Verified Condition', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
                       const SizedBox(height: 6),
                       TextField(
                         controller: searchCtrl,
@@ -534,7 +535,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                               const Icon(Icons.check_circle_rounded, color: AppTheme.primary, size: 18),
                               const SizedBox(width: 8),
                               Expanded(
-                                child: Text(
+                                child: TranslatedText(
                                   'Selected: $selectedKbName',
                                   style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.primary),
                                 ),
@@ -562,7 +563,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                               const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 20),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: Text(
+                                child: TranslatedText(
                                   'Knowledge base not loaded. Use "Custom Condition" to enter the verified diagnosis manually.',
                                   style: GoogleFonts.inter(fontSize: 12, color: Colors.orange.shade800),
                                 ),
@@ -603,14 +604,14 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                           color: category == 'DISEASE' ? AppTheme.error.withValues(alpha: 0.12) : Colors.orange.withValues(alpha: 0.12),
                                           borderRadius: BorderRadius.circular(4),
                                         ),
-                                        child: Text(
+                                        child: TranslatedText(
                                           category,
                                           style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w700, color: category == 'DISEASE' ? AppTheme.error : Colors.orange.shade800),
                                         ),
                                       ),
                                       const SizedBox(width: 8),
                                       Expanded(
-                                        child: Text(
+                                        child: TranslatedText(
                                           kb['name'] ?? 'Unknown',
                                           style: GoogleFonts.inter(fontSize: 13, fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500, color: isSelected ? AppTheme.primary : AppTheme.onSurface),
                                         ),
@@ -625,7 +626,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                         ),
                     ] else ...[
                       // Custom Condition Input
-                      Text('Verified Condition Name', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+                      TranslatedText('Verified Condition Name', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
                       const SizedBox(height: 6),
                       TextField(
                         controller: customConditionCtrl,
@@ -649,7 +650,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                           color: Colors.orange.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
+                        child: TranslatedText(
                           'Custom conditions are added to the expert notes. The system will record the correction but may not link to a specific knowledge base entry.',
                           style: GoogleFonts.inter(fontSize: 11, color: Colors.orange.shade800),
                         ),
@@ -659,7 +660,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                     const SizedBox(height: 16),
 
                     // Notes
-                    Text('Agronomist Explanation', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+                    TranslatedText('Agronomist Explanation', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
                     const SizedBox(height: 6),
                     TextField(
                       controller: notesCtrl,
@@ -716,7 +717,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                     if (context.mounted) {
                                       Navigator.pop(ctx);
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Diagnosis successfully corrected! Farmer notified.')),
+                                        const SnackBar(content: TranslatedText('Diagnosis successfully corrected! Farmer notified.')),
                                       );
                                       _loadAllData();
                                     }
@@ -724,7 +725,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                     setModalState(() => isSubmitting = false);
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Error updating: $e')),
+                                        SnackBar(content: TranslatedText('Error updating: $e')),
                                       );
                                     }
                                   }
@@ -734,7 +735,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           ),
-                          child: Text(
+                          child: TranslatedText(
                             'Submit Corrected Diagnosis',
                             style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: Colors.white),
                           ),
@@ -801,21 +802,21 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                         child: const Icon(Icons.biotech_rounded, color: Colors.purple, size: 20),
                       ),
                       const SizedBox(width: 10),
-                      Text(
+                      TranslatedText(
                         'Refer to Laboratory',
                         style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.purple),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
+                  TranslatedText(
                     'Order an official microscopic / PCR assay when field symptoms are ambiguous or novel.',
                     style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                   ),
                   const SizedBox(height: 16),
 
                   // Laboratory Name
-                  Text(
+                  TranslatedText(
                     'Laboratory / Institute Name',
                     style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface),
                   ),
@@ -834,7 +835,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                   const SizedBox(height: 14),
 
                   // Sample Tracking Code
-                  Text(
+                  TranslatedText(
                     'Tracking / Sample ID',
                     style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface),
                   ),
@@ -853,7 +854,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                   const SizedBox(height: 14),
 
                   // Sampling Guidelines
-                  Text(
+                  TranslatedText(
                     'Sample Collection & Transit Instructions',
                     style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface),
                   ),
@@ -895,7 +896,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                             if (context.mounted) {
                               Navigator.pop(ctx);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Referred to laboratory! Sample ID generated.')),
+                                const SnackBar(content: TranslatedText('Referred to laboratory! Sample ID generated.')),
                               );
                               _loadAllData();
                             }
@@ -903,7 +904,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                             setModalState(() => isSubmitting = false);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error creating referral: $e')),
+                                SnackBar(content: TranslatedText('Error creating referral: $e')),
                               );
                             }
                           }
@@ -913,7 +914,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
-                        child: Text(
+                        child: TranslatedText(
                           'Generate Lab Referral & Dispatch Order',
                           style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: Colors.white),
                         ),
@@ -963,15 +964,15 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                 decoration: BoxDecoration(color: AppTheme.outlineVariant, borderRadius: BorderRadius.circular(2)),
               ),
             ),
-            Text('Update Lab Referral',
+            TranslatedText('Update Lab Referral',
                 style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.w800, color: AppTheme.onSurface)),
             const SizedBox(height: 4),
-            Text('Tracking: ${ref['tracking_number'] ?? 'N/A'}',
+            TranslatedText('Tracking: ${ref['tracking_number'] ?? 'N/A'}',
                 style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant)),
             const SizedBox(height: 20),
 
             // Status Selector
-            Text('Status', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+            TranslatedText('Status', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
@@ -997,7 +998,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                     ),
                     child: Opacity(
                       opacity: opacity,
-                      child: Text(
+                      child: TranslatedText(
                         s.replaceAll('_', ' '),
                         style: GoogleFonts.inter(
                           fontSize: 12, fontWeight: FontWeight.w700,
@@ -1012,7 +1013,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
             const SizedBox(height: 20),
 
             // Results / Notes
-            Text('Lab Results / Notes', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+            TranslatedText('Lab Results / Notes', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
             const SizedBox(height: 8),
             TextField(
               controller: resultsCtrl,
@@ -1057,7 +1058,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       if (context.mounted) {
                         Navigator.pop(ctx);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Lab referral status updated!')),
+                          const SnackBar(content: TranslatedText('Lab referral status updated!')),
                         );
                         _loadAllData();
                       }
@@ -1065,7 +1066,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       setModalState(() => isSubmitting = false);
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error updating referral: $e')),
+                          SnackBar(content: TranslatedText('Error updating referral: $e')),
                         );
                       }
                     }
@@ -1075,7 +1076,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text(
+                  child: TranslatedText(
                     'Save Status Update',
                     style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: Colors.white),
                   ),
@@ -1195,11 +1196,11 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TranslatedText(
                           'Agronomist Review Desk',
                           style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.w800, color: AppTheme.primary),
                         ),
-                        Text(
+                        TranslatedText(
                           'Expert triage, validation & lab referrals',
                           style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant),
                         ),
@@ -1237,7 +1238,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       children: [
                         const Icon(Icons.pending_actions_rounded, size: 16),
                         const SizedBox(width: 6),
-                        Text('Pending (${_pendingReviews.length})'),
+                        TranslatedText('Pending (${_pendingReviews.length})'),
                       ],
                     ),
                   ),
@@ -1247,7 +1248,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       children: [
                         const Icon(Icons.biotech_rounded, size: 16),
                         const SizedBox(width: 6),
-                        Text('Lab Referrals (${_labReferrals.length})'),
+                        TranslatedText('Lab Referrals (${_labReferrals.length})'),
                       ],
                     ),
                   ),
@@ -1257,7 +1258,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       children: [
                         const Icon(Icons.history_rounded, size: 16),
                         const SizedBox(width: 6),
-                        Text('Follow-Ups (${_followUpCases.length})'),
+                        TranslatedText('Follow-Ups (${_followUpCases.length})'),
                       ],
                     ),
                   ),
@@ -1267,7 +1268,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       children: [
                         const Icon(Icons.task_alt_rounded, size: 16),
                         const SizedBox(width: 6),
-                        Text('Completed (${_completedCases.length})'),
+                        TranslatedText('Completed (${_completedCases.length})'),
                       ],
                     ),
                   ),
@@ -1288,7 +1289,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                               children: [
                                 const Icon(Icons.lock_outline_rounded, size: 48, color: Colors.orange),
                                 const SizedBox(height: 12),
-                                Text(
+                                TranslatedText(
                                   _errorMessage!,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.inter(fontSize: 14, color: AppTheme.onSurface),
@@ -1296,7 +1297,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                 const SizedBox(height: 16),
                                 ElevatedButton(
                                   onPressed: _loadAllData,
-                                  child: const Text('Retry'),
+                                  child: const TranslatedText('Retry'),
                                 ),
                               ],
                             ),
@@ -1335,12 +1336,12 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                 child: const Icon(Icons.task_alt_rounded, size: 48, color: Color(0xFF276C00)),
               ),
               const SizedBox(height: 16),
-              Text(
+              TranslatedText(
                 'Queue is Clear!',
                 style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface),
               ),
               const SizedBox(height: 8),
-              Text(
+              TranslatedText(
                 'There are currently no cases waiting for expert review.\nScans with low confidence or manual farmer requests will appear here.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant),
@@ -1412,19 +1413,19 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                   color: Colors.orange.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: Text(
+                                child: TranslatedText(
                                   'AWAITING REVIEW',
                                   style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.orange.shade800),
                                 ),
                               ),
-                              Text(
+                              TranslatedText(
                                 dateStr,
                                 style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant),
                               ),
                             ],
                           ),
                           const SizedBox(height: 6),
-                          Text(
+                          TranslatedText(
                             kbName,
                             style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                             maxLines: 1,
@@ -1433,7 +1434,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              Text(
+                              TranslatedText(
                                 'AI Conf: $confidence%',
                                 style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                               ),
@@ -1444,7 +1445,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                                 decoration: const BoxDecoration(shape: BoxShape.circle, color: AppTheme.onSurfaceVariant),
                               ),
                               const SizedBox(width: 8),
-                              Text(
+                              TranslatedText(
                                 severity.toUpperCase(),
                                 style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: _severityColor(severity)),
                               ),
@@ -1462,7 +1463,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                   child: ElevatedButton.icon(
                     onPressed: () => _showValidationModal(item),
                     icon: const Icon(Icons.fact_check_rounded, size: 16, color: AppTheme.primary),
-                    label: Text(
+                    label: TranslatedText(
                       'Triage & Review Case',
                       style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: AppTheme.primary, fontSize: 13),
                     ),
@@ -1499,12 +1500,12 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                 child: const Icon(Icons.history_rounded, size: 48, color: Color(0xFF1565C0)),
               ),
               const SizedBox(height: 16),
-              Text(
+              TranslatedText(
                 'No Follow-Ups',
                 style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface),
               ),
               const SizedBox(height: 8),
-              Text(
+              TranslatedText(
                 'There are no active follow-up cases waiting for expert review.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant),
@@ -1570,20 +1571,20 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                               color: AppTheme.surfaceContainerHighest,
                               borderRadius: BorderRadius.circular(6),
                             ),
-                            child: Text(
+                            child: TranslatedText(
                               diagType,
                               style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.onSurfaceVariant),
                             ),
                           ),
                           const SizedBox(height: 6),
-                          Text(
+                          TranslatedText(
                             kbName,
                             style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.onSurface),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 4),
-                          Text(
+                          TranslatedText(
                             severity.toUpperCase(),
                             style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: _severityColor(severity)),
                           ),
@@ -1606,7 +1607,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                           );
                         },
                         icon: const Icon(Icons.analytics_outlined, size: 16, color: AppTheme.primary),
-                        label: Text(
+                        label: TranslatedText(
                           'Original AI Detection',
                           style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: AppTheme.primary, fontSize: 11),
                         ),
@@ -1631,7 +1632,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                           }
                         },
                         icon: const Icon(Icons.history_rounded, size: 16, color: Colors.white),
-                        label: Text(
+                        label: TranslatedText(
                           'Review Follow-Up Logs',
                           style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: Colors.white, fontSize: 11),
                         ),
@@ -1670,12 +1671,12 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                 child: const Icon(Icons.biotech_rounded, size: 48, color: Colors.purple),
               ),
               const SizedBox(height: 16),
-              Text(
+              TranslatedText(
                 'No Active Lab Referrals',
                 style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface),
               ),
               const SizedBox(height: 8),
-              Text(
+              TranslatedText(
                 'When you refer complex or unusual samples to diagnostic laboratories, tracking numbers and status will show here.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant),
@@ -1732,7 +1733,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                           const Icon(Icons.science_rounded, size: 18, color: Colors.purple),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text(
+                            child: TranslatedText(
                               labName,
                               style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                               overflow: TextOverflow.ellipsis,
@@ -1747,7 +1748,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                         color: statusBg,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Text(
+                      child: TranslatedText(
                         status.replaceAll('_', ' '),
                         style: GoogleFonts.inter(
                           fontSize: 10,
@@ -1759,13 +1760,13 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
+                TranslatedText(
                   'Tracking Code: $tracking',
                   style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurfaceVariant),
                 ),
                 if (summary.isNotEmpty) ...[
                   const SizedBox(height: 6),
-                  Text(
+                  TranslatedText(
                     summary,
                     style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurface),
                   ),
@@ -1777,7 +1778,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                   child: OutlinedButton.icon(
                     onPressed: () => _showUpdateReferralModal(ref),
                     icon: const Icon(Icons.edit_note_rounded, size: 18),
-                    label: Text('Update Status & Results', style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 13)),
+                    label: TranslatedText('Update Status & Results', style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 13)),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.purple,
                       side: BorderSide(color: Colors.purple.withValues(alpha: 0.5)),
@@ -1811,12 +1812,12 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                 child: const Icon(Icons.task_alt_rounded, size: 48, color: AppTheme.primary),
               ),
               const SizedBox(height: 16),
-              Text(
+              TranslatedText(
                 'No Completed Cases Yet',
                 style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface),
               ),
               const SizedBox(height: 8),
-              Text(
+              TranslatedText(
                 'Cases you confirm or correct will appear here as your personal review history.',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant),
@@ -1892,14 +1893,14 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TranslatedText(
                             label,
                             style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           const SizedBox(height: 2),
-                          Text(
+                          TranslatedText(
                             '$cropName · ${confidence.toInt()}% conf',
                             style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                           ),
@@ -1918,7 +1919,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                         children: [
                           Icon(statusIcon, size: 12, color: statusColor),
                           const SizedBox(width: 4),
-                          Text(
+                          TranslatedText(
                             isConfirmed ? 'Confirmed' : 'Corrected',
                             style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: statusColor),
                           ),
@@ -1937,7 +1938,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                         color: _severityColor(severity).withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Text(
+                      child: TranslatedText(
                         severity,
                         style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: _severityColor(severity)),
                       ),
@@ -1945,11 +1946,11 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                     const SizedBox(width: 8),
                     Icon(Icons.calendar_today_rounded, size: 12, color: AppTheme.onSurfaceVariant),
                     const SizedBox(width: 4),
-                    Text(createdAt, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant)),
+                    TranslatedText(createdAt, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant)),
                     const Spacer(),
                     Icon(Icons.person_rounded, size: 13, color: AppTheme.onSurfaceVariant),
                     const SizedBox(width: 4),
-                    Text(expertName, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant)),
+                    TranslatedText(expertName, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant)),
                   ],
                 ),
                 // Expert notes
@@ -1962,7 +1963,7 @@ class _ExpertReviewScreenState extends State<ExpertReviewScreen> with SingleTick
                       color: AppTheme.surfaceContainerLow,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text(
+                    child: TranslatedText(
                       expertNotes,
                       style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurface, fontStyle: FontStyle.italic),
                       maxLines: 3,

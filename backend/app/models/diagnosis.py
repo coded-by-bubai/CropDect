@@ -40,5 +40,7 @@ class DiagnosisReport(Base):
     location = mapped_column(Geography(geometry_type='POINT', srid=4326, spatial_index=False), nullable=True)
     status: Mapped[DiagnosisStatus] = mapped_column(SQLEnum(DiagnosisStatus), default=DiagnosisStatus.AI_PREDICTED)
     model_version: Mapped[str] = mapped_column(String(50), nullable=True)
+    infection_temp_c: Mapped[float] = mapped_column(Float, nullable=True)
+    infection_humidity_percent: Mapped[float] = mapped_column(Float, nullable=True)
 
     crop = relationship("Crop", back_populates="diagnosis_reports")

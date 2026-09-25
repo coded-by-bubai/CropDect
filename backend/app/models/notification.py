@@ -7,6 +7,7 @@ class NotificationType(str, enum.Enum):
     DIAGNOSIS_UPDATE = "DIAGNOSIS_UPDATE"
     LAB_RESULT = "LAB_RESULT"
     WEATHER_ALERT = "WEATHER_ALERT"
+    PREDICTIVE_ALERT = "PREDICTIVE_ALERT"
     SYSTEM = "SYSTEM"
 
 class Notification(Base):

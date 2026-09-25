@@ -399,6 +399,72 @@ def get_activity_log(db: Session, limit: int = 50) -> List[AdminActivityItem]:
             )
         )
 
+    # 4. New Users Registered
+    recent_users = (
+        db.query(User)
+        .order_by(desc(User.created_at))
+        .limit(20)
+        .all()
+    )
+    for u in recent_users:
+        activities.append(
+            AdminActivityItem(
+                id=u.id,
+                type="SYSTEM",
+                title=f"New User Joined: {u.name or 'Unknown'}",
+                description=f"Role: {u.role.value}. Phone: {u.phone}",
+                user_name=u.name or "System",
+                user_role="SYSTEM",
+                timestamp=u.created_at,
+                status="ACTIVE",
+            )
+        )
+
+    # 5. New Farms Added
+    recent_farms = (
+        db.query(Farm)
+        .order_by(desc(Farm.created_at))
+        .limit(20)
+        .all()
+    )
+    for f in recent_farms:
+        owner_name = f.owner.name if f.owner else "Farmer"
+        activities.append(
+            AdminActivityItem(
+                id=f.id,
+                type="SYSTEM",
+                title=f"New Farm Registered: {f.name}",
+                description=f"Area: {f.area} acres. Soil: {f.soil_type}",
+                user_name=owner_name,
+                user_role="FARMER",
+                timestamp=f.created_at,
+                status="ACTIVE",
+            )
+        )
+
+    # 6. New Crops Added
+    recent_crops = (
+        db.query(Crop)
+        .order_by(desc(Crop.created_at))
+        .limit(20)
+        .all()
+    )
+    for c in recent_crops:
+        farm_name = c.farm.name if c.farm else "Farm"
+        owner_name = c.farm.owner.name if c.farm and c.farm.owner else "Farmer"
+        activities.append(
+            AdminActivityItem(
+                id=c.id,
+                type="SYSTEM",
+                title=f"Crop Added: {c.crop_type}",
+                description=f"Variety: {c.variety} in {farm_name}",
+                user_name=owner_name,
+                user_role="FARMER",
+                timestamp=c.created_at,
+                status="ACTIVE",
+            )
+        )
+
     # Sort all by timestamp descending
     activities.sort(key=lambda x: x.timestamp, reverse=True)
     return activities[:limit]

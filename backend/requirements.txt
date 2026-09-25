@@ -13,6 +13,7 @@ bcrypt==3.2.2
 PyJWT==2.8.0
 python-multipart
 slowapi==0.1.9
+firebase-admin>=6.5.0
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.3.1
 torchvision==0.18.1
@@ -20,3 +21,5 @@ Pillow==10.3.0
 google-genai==0.3.0
 cloudinary
 scikit-learn==1.6.3
+xgboost>=2.0.0
+pandas>=2.0.0

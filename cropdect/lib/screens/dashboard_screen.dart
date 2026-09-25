@@ -22,6 +22,7 @@ import 'package:cropdect/services/diagnostic_service.dart';
 import 'package:cropdect/services/notification_service.dart';
 import 'notifications_screen.dart';
 import '../api_client.dart';
+import '../widgets/translated_text.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -178,7 +179,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Image.asset('assets/app_logo.jpg', height: 28, width: 28, fit: BoxFit.cover),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
+                  const TranslatedText(
                     'cropdect',
                     style: TextStyle(
                       color: AppTheme.primary,
@@ -232,7 +233,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.red,
                             shape: BoxShape.circle,
                           ),
-                          child: Text(
+                          child: TranslatedText(
                             '$_unreadNotifications',
                             style: const TextStyle(
                               color: Colors.white,
@@ -253,7 +254,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    const TranslatedText(
                       'Welcome back,',
                       style: TextStyle(
                         color: AppTheme.onSurfaceVariant,
@@ -265,11 +266,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       future: _userFuture,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Text('Loading...', style: TextStyle(color: AppTheme.primary, fontSize: 30, fontWeight: FontWeight.bold));
+                          return const TranslatedText('Loading...', style: TextStyle(color: AppTheme.primary, fontSize: 30, fontWeight: FontWeight.bold));
                         } else if (snapshot.hasError || !snapshot.hasData) {
-                          return const Text('Farmer', style: TextStyle(color: AppTheme.primary, fontSize: 30, fontWeight: FontWeight.bold));
+                          return const TranslatedText('Farmer', style: TextStyle(color: AppTheme.primary, fontSize: 30, fontWeight: FontWeight.bold));
                         }
-                        return Text(
+                        return TranslatedText(
                           snapshot.data!.name ?? 'Farmer',
                           style: const TextStyle(
                             color: AppTheme.primary,
@@ -312,7 +313,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 24),
 
                     // Field Status Cards
-                    const Text(
+                    const TranslatedText(
                       'FIELD STATUS',
                       style: TextStyle(
                         color: AppTheme.onSurfaceVariant,
@@ -328,9 +329,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Text('Error loading fields', style: TextStyle(color: AppTheme.error));
+                          return TranslatedText('Error loading fields', style: TextStyle(color: AppTheme.error));
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Text('No fields configured.', style: TextStyle(color: AppTheme.onSurfaceVariant));
+                          return const TranslatedText('No fields configured.', style: TextStyle(color: AppTheme.onSurfaceVariant));
                         }
                         return _buildFieldStatusList(snapshot.data!);
                       },
@@ -388,7 +389,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               padding: const EdgeInsets.all(24),
-              child: const Text(
+              child: const TranslatedText(
                 'AI Diagnostics Ready',
                 style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
               ),
@@ -404,7 +405,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       _onItemTapped(2); // Go to Scan
                     },
                     icon: const Icon(Icons.document_scanner, color: AppTheme.onPrimaryContainer),
-                    label: const Text('Scan Crop', style: TextStyle(color: AppTheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
+                    label: const TranslatedText('Scan Crop', style: TextStyle(color: AppTheme.onPrimaryContainer, fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryFixed,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -423,7 +424,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       );
                     },
                     icon: const Icon(Icons.smart_toy_rounded, color: AppTheme.primary),
-                    label: const Text('Ask AI', style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold)),
+                    label: const TranslatedText('Ask AI', style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold)),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppTheme.primary, width: 1.5),
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -481,11 +482,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        TranslatedText(
                           'Outbreak Map',
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.onSurface),
                         ),
-                        Text(
+                        TranslatedText(
                           'Regional Alerts',
                           style: TextStyle(fontSize: 10, color: AppTheme.onSurfaceVariant),
                         ),
@@ -541,11 +542,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TranslatedText(
                               'Expert Consult',
                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.onSurface),
                             ),
-                            Text(
+                            TranslatedText(
                               'Request Review',
                               style: TextStyle(fontSize: 10, color: AppTheme.onSurfaceVariant),
                             ),
@@ -596,12 +597,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            const TranslatedText(
               'Submit Scan for Expert Review',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primary),
             ),
             const SizedBox(height: 6),
-            const Text(
+            const TranslatedText(
               'Select a recent crop scan to submit to certified agronomists for diagnosis validation and prescription advice.',
               style: TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant),
             ),
@@ -610,7 +611,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Center(
-                  child: Text(
+                  child: TranslatedText(
                     allDiagnoses.isEmpty
                         ? 'No scans found yet. Scan crop leaves to get started!'
                         : 'All your scans are already submitted or reviewed by experts.',
@@ -660,11 +661,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                TranslatedText(
                                   '${d.cropName ?? "Crop"} • ${d.label ?? "Scan"}',
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.onSurface),
                                 ),
-                                Text(
+                                TranslatedText(
                                   'Confidence: ${(d.confidence * 100).toStringAsFixed(0)}%',
                                   style: const TextStyle(fontSize: 11, color: AppTheme.onSurfaceVariant),
                                 ),
@@ -679,7 +680,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 if (mounted) {
                                   ScaffoldMessenger.of(this.context).showSnackBar(
                                     const SnackBar(
-                                      content: Text('Scan submitted for agronomist review!'),
+                                      content: TranslatedText('Scan submitted for agronomist review!'),
                                       backgroundColor: Color(0xFF276C00),
                                     ),
                                   );
@@ -691,7 +692,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 if (mounted) {
                                   ScaffoldMessenger.of(this.context).showSnackBar(
                                     SnackBar(
-                                      content: Text('Submission failed: $e'),
+                                      content: TranslatedText('Submission failed: $e'),
                                       backgroundColor: AppTheme.error,
                                     ),
                                   );
@@ -704,7 +705,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
-                            child: const Text('Request', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                            child: const TranslatedText('Request', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                           ),
                         ],
                       ),
@@ -754,7 +755,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const SizedBox(width: 8),
                   const Expanded(
-                    child: Text(
+                    child: TranslatedText(
                       'EXPERT REVIEWS & ADVISORIES',
                       style: TextStyle(
                         color: AppTheme.onSurfaceVariant,
@@ -776,7 +777,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               },
               icon: const Icon(Icons.forum_outlined, size: 14, color: AppTheme.primary),
-              label: const Text(
+              label: const TranslatedText(
                 'All Reviews',
                 style: TextStyle(color: AppTheme.primary, fontSize: 11, fontWeight: FontWeight.bold),
               ),
@@ -812,12 +813,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          TranslatedText(
                             'No Expert Reviews Yet',
                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.onSurface),
                           ),
                           SizedBox(height: 2),
-                          Text(
+                          TranslatedText(
                             'Scan crop leaves with your camera, then submit for official agronomist review and treatment prescriptions.',
                             style: TextStyle(fontSize: 11, color: AppTheme.onSurfaceVariant),
                           ),
@@ -833,7 +834,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: ElevatedButton.icon(
                       onPressed: () => _showRequestReviewSheet(context, diagnoses),
                       icon: const Icon(Icons.send_rounded, size: 14),
-                      label: const Text('Submit Recent Scan to Expert', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      label: const TranslatedText('Submit Recent Scan to Expert', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF276C00),
                         foregroundColor: Colors.white,
@@ -933,7 +934,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: Text(
+                                      child: TranslatedText(
                                         '$cropTitle • $expertLabel',
                                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.onSurface),
                                         overflow: TextOverflow.ellipsis,
@@ -945,7 +946,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         color: badgeBg,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
-                                      child: Text(
+                                      child: TranslatedText(
                                         statusText,
                                         style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: badgeFg),
                                       ),
@@ -953,7 +954,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 4),
-                                Text(
+                                TranslatedText(
                                   d.expertName != null
                                       ? 'Reviewed by: ${d.expertName}'
                                       : (isPending ? 'Awaiting agronomist review' : 'Certified Agronomist'),
@@ -981,7 +982,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               const Icon(Icons.format_quote_rounded, size: 16, color: Color(0xFF2E7D32)),
                               const SizedBox(width: 6),
                               Expanded(
-                                child: Text(
+                                child: TranslatedText(
                                   d.expertNotes!,
                                   style: const TextStyle(fontSize: 12, color: Color(0xFF1B5E20), fontStyle: FontStyle.italic),
                                 ),
@@ -1019,7 +1020,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
+                        TranslatedText(
                           'Tap to view IPM treatment plan',
                           style: TextStyle(fontSize: 10, color: AppTheme.primary.withValues(alpha: 0.8), fontWeight: FontWeight.w600),
                         ),
@@ -1039,7 +1040,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             OutlinedButton.icon(
               onPressed: () => _showRequestReviewSheet(context, diagnoses),
               icon: const Icon(Icons.add_task_rounded, size: 16, color: Color(0xFF1565C0)),
-              label: Text(
+              label: TranslatedText(
                 'Request Expert Review (${unreviewed.length} scan${unreviewed.length == 1 ? '' : 's'})',
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF1565C0)),
                 overflow: TextOverflow.ellipsis,
@@ -1072,9 +1073,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Primary Field', style: TextStyle(color: AppTheme.onPrimaryContainer, fontSize: 14)),
+                const TranslatedText('Primary Field', style: TextStyle(color: AppTheme.onPrimaryContainer, fontSize: 14)),
                 const SizedBox(height: 4),
-                Text('${weather.currentTempC.toStringAsFixed(1)}°C', style: const TextStyle(color: AppTheme.primaryFixed, fontSize: 36, fontWeight: FontWeight.bold)),
+                TranslatedText('${weather.currentTempC.toStringAsFixed(1)}°C', style: const TextStyle(color: AppTheme.primaryFixed, fontSize: 36, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -1085,7 +1086,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 const Icon(Icons.wb_sunny, color: AppTheme.secondaryFixed, size: 36),
                 const SizedBox(height: 8),
-                Text('Risk: ${weather.riskLevel}', textAlign: TextAlign.right, style: const TextStyle(color: AppTheme.primaryFixed, fontSize: 14, fontWeight: FontWeight.bold)),
+                TranslatedText('Risk: ${weather.riskLevel}', textAlign: TextAlign.right, style: const TextStyle(color: AppTheme.primaryFixed, fontSize: 14, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -1127,9 +1128,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
+              TranslatedText(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
               const SizedBox(height: 4),
-              Text(crop, style: const TextStyle(color: AppTheme.onSurfaceVariant)),
+              TranslatedText(crop, style: const TextStyle(color: AppTheme.onSurfaceVariant)),
             ],
           ),
           Container(
@@ -1138,7 +1139,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: statusColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Text(
+            child: TranslatedText(
               status,
               style: TextStyle(color: statusColor == Colors.orange ? const Color(0xFF422D00) : AppTheme.onSecondaryFixed, fontWeight: FontWeight.bold, fontSize: 12),
             ),
@@ -1197,7 +1198,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: isSelected ? AppTheme.onSecondaryContainer : AppTheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 4),
-            Text(
+            TranslatedText(
               label,
               style: TextStyle(
                 fontSize: 10,

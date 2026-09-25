@@ -4,8 +4,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme.dart';
 import '../api_client.dart';
+import '../widgets/translated_text.dart';
 
 class HotspotMapScreen extends StatefulWidget {
   final bool showBackButton;
@@ -23,9 +26,11 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
   String? _selectedDisease;
   double? _selectedRadiusKm;
   bool _criticalOnly = false;
+  bool _aiPredictionsOnly = false;
   bool _showOutbreaks = true;
   Map<String, dynamic>? _selectedMarkerData;
   List<dynamic> _clusters = [];
+  String? _userRole;
 
   @override
   void initState() {
@@ -34,6 +39,13 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
   }
 
   Future<void> _initUserLocationAndFetch() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _userRole = prefs.getString('user_role');
+      });
+    }
+
     try {
       final pos = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium, timeLimit: Duration(seconds: 5)),
@@ -103,8 +115,19 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
   @override
   Widget build(BuildContext context) {
     final displayedHotspots = _hotspots.where((spot) {
+      if (_aiPredictionsOnly) return false; // AI Predictions don't have regular markers right now
       if (!_criticalOnly) return true;
       return (spot['severity']?.toString().toUpperCase() == 'CRITICAL');
+    }).toList();
+
+    final displayedClusters = _clusters.where((c) {
+      if (_aiPredictionsOnly) {
+        return (c['case_count'] ?? 0) == 0;
+      }
+      if (_criticalOnly) {
+        return (c['case_count'] ?? 0) != 0; // Assuming actual outbreaks are critical enough, or just let them show
+      }
+      return true;
     }).toList();
 
     return Scaffold(
@@ -120,23 +143,26 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
               minZoom: 3.0,
               maxZoom: 18.0,
               onTap: (tapPosition, point) {
-                if (_showOutbreaks && _clusters.isNotEmpty) {
+                if (_showOutbreaks && displayedClusters.isNotEmpty) {
                   const distanceCalc = Distance();
-                  for (final c in _clusters) {
+                  for (final c in displayedClusters) {
                     final lat = (c['latitude'] as num).toDouble();
                     final lng = (c['longitude'] as num).toDouble();
                     final radius = (c['radius_km'] as num).toDouble() * 1000.0;
                     
                     final dist = distanceCalc.distance(point, LatLng(lat, lng));
                     if (dist <= radius) {
+                      final isPredictive = (c['case_count'] ?? 0) == 0;
                       setState(() {
                         _selectedMarkerData = {
-                          'severity': 'CRITICAL',
-                          'disease_name': '${c['disease_name']} Outbreak',
-                          'crop_name': 'Regional Area (${c['case_count']} cases)',
-                          'timestamp': '15km Radius Zone',
+                          'severity': isPredictive ? 'HIGH' : 'CRITICAL',
+                          'disease_name': isPredictive ? '${c['disease_name']} Alert' : '${c['disease_name']} Outbreak',
+                          'crop_name': isPredictive ? 'XGBoost Prediction (Weather Matched)' : 'Regional Area (${c['case_count']} cases)',
+                          'timestamp': isPredictive ? '> 90% Probability' : '15km Radius Zone',
                           'latitude': (lat * 1000).round() / 1000,
                           'longitude': (lng * 1000).round() / 1000,
+                          'is_outbreak': true,
+                          'is_predictive': isPredictive,
                         };
                       });
                       return; // Stop checking after finding the first one
@@ -155,20 +181,33 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.cropdect',
               ),
-              if (_showOutbreaks && _clusters.isNotEmpty)
+              if (_showOutbreaks && displayedClusters.isNotEmpty)
                 CircleLayer(
-                  circles: _clusters.map((c) {
+                  circles: displayedClusters.expand((c) {
                     final lat = (c['latitude'] as num).toDouble();
                     final lng = (c['longitude'] as num).toDouble();
                     final radius = (c['radius_km'] as num).toDouble() * 1000.0;
-                    return CircleMarker(
-                      point: LatLng(lat, lng),
-                      color: Colors.red.withValues(alpha: 0.15),
-                      borderColor: Colors.red.withValues(alpha: 0.8),
-                      borderStrokeWidth: 2,
-                      useRadiusInMeter: true,
-                      radius: radius,
-                    );
+                    final count = c['case_count'] ?? 0;
+                    final isPredictive = count == 0;
+                    
+                    if (isPredictive) {
+                      return [
+                        CircleMarker(point: LatLng(lat, lng), radius: radius, useRadiusInMeter: true, color: Colors.yellow.withValues(alpha: 0.1), borderColor: Colors.transparent, borderStrokeWidth: 0),
+                        CircleMarker(point: LatLng(lat, lng), radius: radius * 0.7, useRadiusInMeter: true, color: Colors.orange.withValues(alpha: 0.2), borderColor: Colors.transparent, borderStrokeWidth: 0),
+                        CircleMarker(point: LatLng(lat, lng), radius: radius * 0.4, useRadiusInMeter: true, color: Colors.deepOrange.withValues(alpha: 0.35), borderColor: Colors.transparent, borderStrokeWidth: 0),
+                        CircleMarker(point: LatLng(lat, lng), radius: radius * 0.15, useRadiusInMeter: true, color: Colors.red.withValues(alpha: 0.6), borderColor: Colors.transparent, borderStrokeWidth: 0),
+                      ];
+                    }
+                    return [
+                      CircleMarker(
+                        point: LatLng(lat, lng),
+                        color: AppTheme.error.withValues(alpha: 0.08),
+                        borderColor: AppTheme.error.withValues(alpha: 0.4),
+                        borderStrokeWidth: 1,
+                        useRadiusInMeter: true,
+                        radius: radius,
+                      )
+                    ];
                   }).toList(),
                 ),
 
@@ -215,12 +254,13 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                   );
                 }).toList(),
               ),
-              if (_showOutbreaks && _clusters.isNotEmpty)
+              if (_showOutbreaks && displayedClusters.isNotEmpty)
                 MarkerLayer(
-                  markers: _clusters.map((c) {
+                  markers: displayedClusters.map((c) {
                     final lat = (c['latitude'] as num).toDouble();
                     final lng = (c['longitude'] as num).toDouble();
                     final count = c['case_count'] ?? 0;
+                    final isPredictive = count == 0;
                     return Marker(
                       point: LatLng(lat, lng),
                       width: 120,
@@ -230,33 +270,41 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                           onTap: () {
                             setState(() {
                               _selectedMarkerData = {
-                                'severity': 'CRITICAL',
-                                'disease_name': '${c['disease_name']} Outbreak',
-                                'crop_name': 'Regional Area (${c['case_count']} cases)',
-                                'timestamp': '15km Radius Zone',
+                                'severity': isPredictive ? 'HIGH' : 'CRITICAL',
+                                'disease_name': isPredictive ? 'Predictive Risk Zone' : '${c['disease_name']} Outbreak',
+                                'crop_name': isPredictive ? 'Weather Matched Warning' : 'Regional Area (${c['case_count']} cases)',
+                                'timestamp': isPredictive ? '10km Forecast Zone' : '15km Radius Zone',
                                 'latitude': (lat * 1000).round() / 1000,
                                 'longitude': (lng * 1000).round() / 1000,
+                                'is_outbreak': true,
                               };
                             });
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Colors.red.shade900,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: Colors.white, width: 2),
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black45, blurRadius: 6, offset: Offset(0, 3)),
+                              color: isPredictive ? Colors.orange.shade800.withValues(alpha: 0.95) : AppTheme.error.withValues(alpha: 0.95),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.white, width: 1.5),
+                              boxShadow: [
+                                BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 4, offset: const Offset(0, 2)),
                               ],
                             ),
-                            child: Text(
-                              '$count Cases',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 14,
-                              ),
-                              textAlign: TextAlign.center,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(isPredictive ? Icons.online_prediction : Icons.warning_rounded, color: Colors.white, size: 12),
+                                const SizedBox(width: 4),
+                                TranslatedText(
+                                  isPredictive ? 'AI RISK' : '$count',
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -303,14 +351,14 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
+                              TranslatedText(
                                 'Crop Disease Hotspot Map',
                                 style: GoogleFonts.manrope(fontWeight: FontWeight.w800, fontSize: 16, color: AppTheme.primary),
                               ),
                               AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 300),
                                 transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
-                                child: Text(
+                                child: TranslatedText(
                                   '${displayedHotspots.length} verified surveillance points',
                                   key: ValueKey(displayedHotspots.length),
                                   style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant),
@@ -349,27 +397,26 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
               const SizedBox(height: 12),
 
                   // Radius Filter Bar
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
+                  SizedBox(
+                    width: double.infinity,
+                    child: Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         _buildFilterChip('All Outbreaks', _selectedRadiusKm == null, () {
                           setState(() => _selectedRadiusKm = null);
                           _fetchHotspots();
                         }),
-                        const SizedBox(width: 8),
                         _buildFilterChip('Within 15 km', _selectedRadiusKm == 15.0, () {
                           setState(() => _selectedRadiusKm = 15.0);
                           _fetchHotspots();
                         }),
-                        const SizedBox(width: 8),
                         _buildFilterChip('Within 50 km', _selectedRadiusKm == 50.0, () {
                           setState(() => _selectedRadiusKm = 50.0);
                           _fetchHotspots();
                         }),
-                        const SizedBox(width: 12),
                         Container(width: 1, height: 24, color: AppTheme.outlineVariant),
-                        const SizedBox(width: 12),
                         _buildFilterChip('Critical Only', _criticalOnly, () {
                           setState(() {
                             _criticalOnly = !_criticalOnly;
@@ -381,7 +428,14 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                             }
                           });
                         }),
-                        const SizedBox(width: 8),
+                        if (_userRole == 'ADMIN' || _userRole == 'EXPERT')
+                          _buildFilterChip('AI Predictions', _aiPredictionsOnly, () {
+                            setState(() {
+                              _aiPredictionsOnly = !_aiPredictionsOnly;
+                              if (_aiPredictionsOnly) _criticalOnly = false;
+                              _selectedMarkerData = null;
+                            });
+                          }),
                         _buildFilterChip('Show Outbreaks', _showOutbreaks, () {
                           setState(() => _showOutbreaks = !_showOutbreaks);
                         }),
@@ -415,7 +469,7 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                       ),
                       const SizedBox(width: 10),
-                      Text('Querying geospatial records...', style: GoogleFonts.inter(fontSize: 12, color: Colors.white)),
+                      TranslatedText('Querying geospatial records...', style: GoogleFonts.inter(fontSize: 12, color: Colors.white)),
                     ],
                   ),
                 ),
@@ -487,13 +541,23 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                             color: _severityColor(_selectedMarkerData!['severity']).withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(
-                            (_selectedMarkerData!['severity'] ?? 'MODERATE').toString().toUpperCase(),
-                            style: GoogleFonts.inter(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w800,
-                              color: _severityColor(_selectedMarkerData!['severity']),
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (_selectedMarkerData!['is_predictive'] == true)
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 4.0),
+                                  child: Icon(Icons.online_prediction, size: 14, color: Colors.orange),
+                                ),
+                              TranslatedText(
+                                _selectedMarkerData!['is_predictive'] == true ? 'AI RISK' : (_selectedMarkerData!['severity'] ?? 'MODERATE').toString().toUpperCase(),
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  color: _severityColor(_selectedMarkerData!['severity']),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         IconButton(
@@ -503,20 +567,58 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
+                    TranslatedText(
                       _selectedMarkerData!['disease_name'] ?? 'Crop Disease Outbreak',
                       style: GoogleFonts.manrope(fontSize: 17, fontWeight: FontWeight.w800, color: AppTheme.onSurface),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Crop: ${_selectedMarkerData!['crop_name'] ?? 'Farm plot'} · Reported: ${_selectedMarkerData!['timestamp']?.toString().substring(0, 10) ?? 'Recent'}',
-                      style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
+                    TranslatedText(
+                      _selectedMarkerData!['is_predictive'] == true
+                          ? '${_selectedMarkerData!['crop_name']} · Risk: ${_selectedMarkerData!['timestamp']}'
+                          : 'Crop: ${_selectedMarkerData!['crop_name'] ?? 'Farm plot'} · Reported: ${_selectedMarkerData!['timestamp']?.toString().substring(0, 10) ?? 'Recent'}',
+                      style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: _selectedMarkerData!['is_predictive'] == true ? Colors.orange.shade800 : AppTheme.onSurfaceVariant,
+                          fontWeight: _selectedMarkerData!['is_predictive'] == true ? FontWeight.w600 : FontWeight.normal),
                     ),
+                    if (_selectedMarkerData!['is_predictive'] == true) ...[
+                      const SizedBox(height: 4),
+                      TranslatedText(
+                        'Warning: Local temperature and humidity patterns match historical outbreak conditions for this region.',
+                        style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline),
+                      ),
+                    ],
                     const SizedBox(height: 6),
-                    Text(
+                    TranslatedText(
                       'Coordinates: ${_selectedMarkerData!['latitude']}, ${_selectedMarkerData!['longitude']}',
                       style: GoogleFonts.inter(fontSize: 11, color: AppTheme.primary, fontWeight: FontWeight.w500),
                     ),
+                    if (_userRole == 'EXPERT' || _userRole == 'EXTENSION_WORKER') ...[
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primary,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          icon: const Icon(Icons.directions, size: 18),
+                          label: TranslatedText(
+                            'Navigate to Location',
+                            style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 13),
+                          ),
+                          onPressed: () {
+                            final lat = (_selectedMarkerData!['latitude'] as num).toDouble();
+                            final lng = (_selectedMarkerData!['longitude'] as num).toDouble();
+                            final isOutbreak = _selectedMarkerData!['is_outbreak'] == true;
+                            _launchMaps(lat, lng, isOutbreak: isOutbreak);
+                          },
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -524,6 +626,22 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _launchMaps(double lat, double lng, {bool isOutbreak = false}) async {
+    final String urlStr = isOutbreak
+        ? 'geo:0,0?q=$lat,$lng(Disease%20Outbreak%20Zone)'
+        : 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    final uri = Uri.parse(urlStr);
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: TranslatedText('Could not open maps application')),
+        );
+      }
+    }
   }
 
   Widget _buildFilterChip(String label, bool isSelected, VoidCallback onTap) {
@@ -551,7 +669,7 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
             color: isSelected ? Colors.white : AppTheme.onSurfaceVariant,
           ),
-          child: Text(label),
+          child: TranslatedText(label),
         ),
       ),
     );
@@ -567,7 +685,7 @@ class _HotspotMapScreenState extends State<HotspotMapScreen> {
           decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
         const SizedBox(width: 6),
-        Text(text, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+        TranslatedText(text, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
       ],
     );
   }

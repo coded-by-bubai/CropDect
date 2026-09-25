@@ -8,6 +8,7 @@ import 'package:cropdect/screens/profile_screen.dart';
 import 'package:cropdect/models/farm.dart';
 import 'package:cropdect/services/farm_service.dart';
 import 'package:cropdect/models/weather.dart';
+import '../widgets/translated_text.dart';
 
 class WeatherIrrigationScreen extends StatefulWidget {
   const WeatherIrrigationScreen({Key? key}) : super(key: key);
@@ -133,7 +134,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     child: Image.asset('assets/app_logo.jpg', height: 28, width: 28, fit: BoxFit.cover),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
+                  const TranslatedText(
                     'cropdect',
                     style: TextStyle(
                       color: AppTheme.primary,
@@ -156,7 +157,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Header Section
-                    Text(
+                    TranslatedText(
                       'Weather & Irrigation',
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             color: AppTheme.primary,
@@ -183,7 +184,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                               items: snapshot.data!.map((farm) {
                                 return DropdownMenuItem<Farm>(
                                   value: farm,
-                                  child: Text(farm.name, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
+                                  child: TranslatedText(farm.name, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
                                 );
                               }).toList(),
                               onChanged: _onFarmSelected,
@@ -229,13 +230,13 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('WIND SPEED', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold)),
+                                    const TranslatedText('WIND SPEED', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
                                         const Icon(Icons.air, color: AppTheme.secondary, size: 20),
                                         const SizedBox(width: 8),
-                                        Text('${w.currentWindSpeedKmh} km/h', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
+                                        TranslatedText('${w.currentWindSpeedKmh} km/h', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
                                       ],
                                     ),
                                   ],
@@ -254,13 +255,13 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text('SOIL MOISTURE', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold)),
+                                    const TranslatedText('SOIL MOISTURE', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold)),
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
                                         const Icon(Icons.grass, color: AppTheme.secondaryFixed, size: 20),
                                         const SizedBox(width: 8),
-                                        Text('${(w.currentSoilMoisture * 100).toStringAsFixed(1)}%', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
+                                        TranslatedText('${(w.currentSoilMoisture * 100).toStringAsFixed(1)}%', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
                                       ],
                                     ),
                                   ],
@@ -284,7 +285,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     const SizedBox(height: 24),
 
                     // 5-Day Forecast
-                    const Text(
+                    const TranslatedText(
                       '7-DAY FORECAST',
                       style: TextStyle(
                         color: AppTheme.onSurfaceVariant,
@@ -371,7 +372,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      const TranslatedText(
                         'CURRENT CONDITIONS',
                         style: TextStyle(
                           color: AppTheme.onSurfaceVariant,
@@ -385,7 +386,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                         crossAxisAlignment: CrossAxisAlignment.baseline,
                         textBaseline: TextBaseline.alphabetic,
                         children: [
-                          Text(
+                          TranslatedText(
                             '${weather.currentTempC.toStringAsFixed(1)}°',
                             style: Theme.of(context).textTheme.displayMedium?.copyWith(
                                   color: AppTheme.primary,
@@ -394,7 +395,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text(
+                            child: TranslatedText(
                               _getWeatherInfo(weather.currentWeatherCode).$1,
                               style: const TextStyle(
                                 color: AppTheme.secondary,
@@ -428,9 +429,9 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('HUMIDITY', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold)),
+                        const TranslatedText('HUMIDITY', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold)),
                         const SizedBox(height: 4),
-                        Text('${weather.currentHumidityPercent.toStringAsFixed(0)}%', style: const TextStyle(color: AppTheme.onSurface, fontSize: 16, fontWeight: FontWeight.bold)),
+                        TranslatedText('${weather.currentHumidityPercent.toStringAsFixed(0)}%', style: const TextStyle(color: AppTheme.onSurface, fontSize: 16, fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
@@ -438,9 +439,9 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('PRECIPITATION', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                        const TranslatedText('PRECIPITATION', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
                         const SizedBox(height: 4),
-                        FittedBox(fit: BoxFit.scaleDown, child: Text('${weather.currentPrecipitationMm}mm', style: const TextStyle(color: AppTheme.onSurface, fontSize: 16, fontWeight: FontWeight.bold))),
+                        FittedBox(fit: BoxFit.scaleDown, child: TranslatedText('${weather.currentPrecipitationMm}mm', style: const TextStyle(color: AppTheme.onSurface, fontSize: 16, fontWeight: FontWeight.bold))),
                       ],
                     ),
                   ),
@@ -448,9 +449,9 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('RISK LEVEL', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+                        const TranslatedText('RISK LEVEL', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
                         const SizedBox(height: 4),
-                        FittedBox(fit: BoxFit.scaleDown, child: Text(weather.riskLevel, style: const TextStyle(color: AppTheme.onSurface, fontSize: 16, fontWeight: FontWeight.bold))),
+                        FittedBox(fit: BoxFit.scaleDown, child: TranslatedText(weather.riskLevel, style: const TextStyle(color: AppTheme.onSurface, fontSize: 16, fontWeight: FontWeight.bold))),
                       ],
                     ),
                   ),
@@ -488,9 +489,9 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text('Weather Coordinates Pending', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
+                    TranslatedText('Weather Coordinates Pending', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppTheme.onSurface)),
                     SizedBox(height: 4),
-                    Text('Configure GPS coordinates for your field to receive live micro-climate updates.', style: TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant)),
+                    TranslatedText('Configure GPS coordinates for your field to receive live micro-climate updates.', style: TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant)),
                   ],
                 ),
               ),
@@ -502,7 +503,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
             child: OutlinedButton.icon(
               onPressed: _loadWeatherData,
               icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('Refresh Weather'),
+              label: const TranslatedText('Refresh Weather'),
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: AppTheme.primary),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -526,7 +527,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
           Icon(Icons.cloud_queue_rounded, color: AppTheme.onSurfaceVariant),
           SizedBox(width: 12),
           Expanded(
-            child: Text(
+            child: TranslatedText(
               'Forecast is currently syncing with regional weather satellites.',
               style: TextStyle(fontSize: 13, color: AppTheme.onSurfaceVariant),
             ),
@@ -576,7 +577,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                 child: const Icon(Icons.water_drop, color: AppTheme.secondaryFixed, size: 20),
               ),
               const SizedBox(width: 12),
-              const Text(
+              const TranslatedText(
                 'Irrigation Status',
                 style: TextStyle(
                   color: AppTheme.onPrimaryContainer,
@@ -587,7 +588,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          Text(
+          TranslatedText(
             description,
             style: TextStyle(color: AppTheme.inversePrimary.withValues(alpha: 0.9), height: 1.5),
           ),
@@ -605,13 +606,13 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Expanded(
-                      child: Text(
+                      child: TranslatedText(
                         'SOIL MOISTURE',
                         style: TextStyle(color: AppTheme.onPrimaryContainer, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.0),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    Text('$moisturePct%', style: TextStyle(fontFamily: 'JetBrains Mono', color: statusColor, fontWeight: FontWeight.bold, fontSize: 16)),
+                    TranslatedText('$moisturePct%', style: TextStyle(fontFamily: 'JetBrains Mono', color: statusColor, fontWeight: FontWeight.bold, fontSize: 16)),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -631,7 +632,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     color: statusColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
+                  child: TranslatedText(
                     'STATUS: $statusText',
                     style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1.2),
                   ),
@@ -722,7 +723,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              TranslatedText(
                 day,
                 style: TextStyle(
                   color: dayColor,
@@ -735,15 +736,15 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(high, style: const TextStyle(fontFamily: 'JetBrains Mono', color: AppTheme.primary, fontWeight: FontWeight.bold)),
+                  TranslatedText(high, style: const TextStyle(fontFamily: 'JetBrains Mono', color: AppTheme.primary, fontWeight: FontWeight.bold)),
                   const SizedBox(width: 8),
-                  Text(low, style: const TextStyle(fontFamily: 'JetBrains Mono', color: AppTheme.onSurfaceVariant)),
+                  TranslatedText(low, style: const TextStyle(fontFamily: 'JetBrains Mono', color: AppTheme.onSurfaceVariant)),
                 ],
               ),
               if (highlightText != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
+                  child: TranslatedText(
                     highlightText,
                     style: const TextStyle(color: AppTheme.secondary, fontSize: 10, fontWeight: FontWeight.bold),
                   ),
@@ -774,7 +775,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
       bool isHighlighted = i == 0;
       
       barWidgets.add(_buildBar(etFactor, isHighlighted));
-      labelWidgets.add(Text(
+      labelWidgets.add(TranslatedText(
         dayLabel, 
         style: TextStyle(
           fontFamily: 'JetBrains Mono', 
@@ -824,7 +825,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                     child: const Icon(Icons.analytics_outlined, size: 16, color: AppTheme.secondary),
                   ),
                   const SizedBox(width: 8),
-                  const Text(
+                  const TranslatedText(
                     'EVAPOTRANSPIRATION (ET) TRENDS',
                     style: TextStyle(
                       color: AppTheme.primary,
@@ -836,7 +837,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              const Text(
+              const TranslatedText(
                 'Monitoring field water loss to optimize irrigation schedules.',
                 style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 13, height: 1.4),
               ),
@@ -926,7 +927,7 @@ class _WeatherIrrigationScreenState extends State<WeatherIrrigationScreen> {
               color: isSelected ? AppTheme.onSecondaryContainer : AppTheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 4),
-            Text(
+            TranslatedText(
               label,
               style: TextStyle(
                 fontSize: 10,

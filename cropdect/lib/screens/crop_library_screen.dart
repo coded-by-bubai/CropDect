@@ -8,6 +8,7 @@ import 'package:cropdect/screens/profile_screen.dart';
 import 'package:cropdect/models/farm.dart';
 import 'package:cropdect/services/farm_service.dart';
 import 'package:geolocator/geolocator.dart';
+import '../widgets/translated_text.dart';
 
 class CropLibraryScreen extends StatefulWidget {
   const CropLibraryScreen({Key? key}) : super(key: key);
@@ -96,7 +97,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
         });
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText(e.toString())));
         }
       }
     }
@@ -132,7 +133,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text(
+              const TranslatedText(
                 'Add New Field / Farm',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface),
               ),
@@ -161,7 +162,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 items: ['Loamy', 'Clay', 'Sandy', 'Silty', 'Peaty', 'Saline']
-                    .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                    .map((s) => DropdownMenuItem(value: s, child: TranslatedText(s)))
                     .toList(),
                 onChanged: (val) {
                   if (val != null) setSheetState(() => selectedSoil = val);
@@ -197,7 +198,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
               OutlinedButton.icon(
                 onPressed: () => fetchLocation(setSheetState),
                 icon: const Icon(Icons.my_location_rounded, size: 18),
-                label: const Text('Use Current GPS Location'),
+                label: const TranslatedText('Use Current GPS Location'),
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 44),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -225,7 +226,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                     } catch (e) {
                       if (ctx.mounted) {
                         ScaffoldMessenger.of(ctx).showSnackBar(
-                          SnackBar(content: Text('Failed to add field: $e')),
+                          SnackBar(content: TranslatedText('Failed to add field: $e')),
                         );
                       }
                     }
@@ -234,7 +235,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                     backgroundColor: AppTheme.primary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Add Field', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: const TranslatedText('Add Field', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -310,7 +311,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                     child: Image.asset('assets/app_logo.jpg', height: 28, width: 28, fit: BoxFit.cover),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
+                  const TranslatedText(
                     'cropdect',
                     style: TextStyle(
                       color: AppTheme.primary,
@@ -356,7 +357,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                           children: [
                             Icon(Icons.search_off_rounded, size: 48, color: AppTheme.outline),
                             const SizedBox(height: 12),
-                            Text(
+                            TranslatedText(
                               _allFarms.isEmpty ? 'No fields configured yet.' : 'No fields match your search.',
                               style: const TextStyle(color: AppTheme.onSurfaceVariant),
                             ),
@@ -365,7 +366,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                               ElevatedButton.icon(
                                 onPressed: _showAddFieldDialog,
                                 icon: const Icon(Icons.add, color: Colors.white),
-                                label: const Text('Add Your First Field', style: TextStyle(color: Colors.white)),
+                                label: const TranslatedText('Add Your First Field', style: TextStyle(color: Colors.white)),
                                 style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
                               ),
                             ]
@@ -475,7 +476,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
           width: 2,
         ),
       ),
-      child: Text(
+      child: TranslatedText(
         label,
         style: TextStyle(
           color: isSelected ? AppTheme.primary : AppTheme.onSurfaceVariant,
@@ -563,7 +564,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                           ),
                         ),
                         const SizedBox(width: 4),
-                        Text(
+                        TranslatedText(
                           status,
                           style: TextStyle(
                             color: statusTextColor,
@@ -586,7 +587,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                TranslatedText(
                   sector.toUpperCase(),
                   style: const TextStyle(
                     color: AppTheme.outline,
@@ -596,7 +597,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
+                TranslatedText(
                   cropName,
                   style: const TextStyle(
                     color: AppTheme.onSurface,
@@ -618,12 +619,12 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            const TranslatedText(
                               'Avg Health Index',
                               style: TextStyle(color: AppTheme.outline, fontSize: 10, fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 4),
-                            Text(
+                            TranslatedText(
                               healthIndex,
                               style: TextStyle(fontFamily: 'JetBrains Mono', color: healthColor, fontSize: 16, fontWeight: FontWeight.bold),
                             ),
@@ -643,7 +644,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TranslatedText(
                               detailLabel,
                               style: TextStyle(
                                 color: detailBgColor != null ? detailColor : AppTheme.outline,
@@ -652,7 +653,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            Text(
+                            TranslatedText(
                               detailValue,
                               style: TextStyle(fontFamily: 'JetBrains Mono', color: detailColor, fontSize: 14, fontWeight: FontWeight.bold),
                               maxLines: 1,
@@ -721,7 +722,7 @@ class _CropLibraryScreenState extends State<CropLibraryScreen> {
               color: isSelected ? AppTheme.onSecondaryContainer : AppTheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 4),
-            Text(
+            TranslatedText(
               label,
               style: TextStyle(
                 fontSize: 10,

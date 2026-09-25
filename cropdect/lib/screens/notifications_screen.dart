@@ -5,6 +5,7 @@ import 'package:cropdect/models/notification.dart';
 import 'package:cropdect/services/notification_service.dart';
 import 'consult_expert_screen.dart';
 import 'monitoring_history_screen.dart';
+import '../widgets/translated_text.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
@@ -99,7 +100,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: Text(
+        title: TranslatedText(
           'Alerts & Notifications',
           style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 18),
         ),
@@ -120,7 +121,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 _fetchNotifications();
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText('Error: $e')));
                 }
               }
             },
@@ -133,7 +134,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const Center(child: Text('Error loading notifications.', style: TextStyle(color: Colors.red)));
+            return const Center(child: TranslatedText('Error loading notifications.', style: TextStyle(color: Colors.red)));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
               child: Column(
@@ -141,7 +142,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                 children: [
                   Icon(Icons.notifications_off_outlined, size: 64, color: AppTheme.onSurfaceVariant.withValues(alpha: 0.5)),
                   const SizedBox(height: 16),
-                  const Text('No new notifications.', style: TextStyle(color: AppTheme.onSurfaceVariant)),
+                  const TranslatedText('No new notifications.', style: TextStyle(color: AppTheme.onSurfaceVariant)),
                 ],
               ),
             );
@@ -179,7 +180,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     // Fire-and-forget deletion so UI is instantly updated
                     notificationService.deleteNotification(notification.id).catchError((e) {
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete: $e')));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText('Failed to delete: $e')));
                         _fetchNotifications(); // Refresh to restore the notification if it failed
                       }
                     });
@@ -214,7 +215,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: Text(
+                                      child: TranslatedText(
                                         notification.title,
                                         style: GoogleFonts.inter(
                                           fontWeight: isUnread ? FontWeight.bold : FontWeight.w600,
@@ -236,7 +237,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 6),
-                                Text(
+                                TranslatedText(
                                   notification.message,
                                   style: GoogleFonts.inter(
                                     fontSize: 14,
@@ -245,7 +246,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                Text(
+                                TranslatedText(
                                   _formatDate(notification.createdAt),
                                   style: GoogleFonts.inter(
                                     fontSize: 12,

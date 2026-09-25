@@ -5,7 +5,9 @@ import 'dart:ui';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:provider/provider.dart';
+import '../widgets/translated_text.dart';
+import '../main.dart';
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -140,28 +142,59 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
           SafeArea(
             child: Column(
               children: [
-                // Skip Button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                    child: TextButton(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        _completeOnboarding();
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.white70,
-                      ),
-                      child: Text(
-                        'SKIP',
-                        style: GoogleFonts.manrope(
-                          letterSpacing: 1.5,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12,
+                // Top Bar: Language Selector & Skip Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Language Selector
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: context.watch<LanguageState>().currentLanguage,
+                            icon: const Icon(Icons.language, color: Colors.white70, size: 18),
+                            dropdownColor: const Color(0xFF04160F),
+                            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+                            items: const [
+                              DropdownMenuItem(value: 'en', child: Text(' English')),
+                              DropdownMenuItem(value: 'hi', child: Text(' हिंदी')),
+                              DropdownMenuItem(value: 'bn', child: Text(' বাংলা')),
+                              DropdownMenuItem(value: 'mr', child: Text(' मराठी')),
+                              DropdownMenuItem(value: 'te', child: Text(' తెలుగు')),
+                            ],
+                            onChanged: (val) {
+                              if (val != null) {
+                                context.read<LanguageState>().changeLanguage(val);
+                              }
+                            },
+                          ),
                         ),
                       ),
-                    ),
+                      // Skip Button
+                      TextButton(
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          _completeOnboarding();
+                        },
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white70,
+                        ),
+                        child: TranslatedText(
+                          'SKIP',
+                          style: GoogleFonts.manrope(
+                            letterSpacing: 1.5,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 
@@ -259,7 +292,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
+                                      TranslatedText(
                                         _currentPage == 2 ? 'GET STARTED' : 'CONTINUE',
                                         style: GoogleFonts.manrope(
                                           color: _currentPage == 2 ? const Color(0xFF04160F) : Colors.white,
@@ -343,7 +376,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
           ),
           const SizedBox(height: 56),
           // Text Content
-          Text(
+          TranslatedText(
             data['title'],
             style: GoogleFonts.manrope(
               fontSize: 32,
@@ -354,7 +387,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          Text(
+          TranslatedText(
             data['description'],
             style: GoogleFonts.inter(
               fontSize: 15,
@@ -491,7 +524,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> with TickerProvider
                 children: [
                   Icon(icon, color: iconColor, size: 36),
                   const SizedBox(height: 12),
-                  Text(text, style: GoogleFonts.jetBrainsMono(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  TranslatedText(text, style: GoogleFonts.jetBrainsMono(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                 ],
               ),
             ),

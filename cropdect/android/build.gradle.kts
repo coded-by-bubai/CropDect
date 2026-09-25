@@ -1,7 +1,15 @@
+plugins {
+    id("com.google.gms.google-services") version "4.4.1" apply false
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
+    }
+    // Exclude legacy firebase-iid which conflicts with firebase-messaging 23+
+    configurations.all {
+        exclude(group = "com.google.firebase", module = "firebase-iid")
     }
 }
 

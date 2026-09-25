@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:cropdect/models/monitoring_log.dart';
 import 'package:cropdect/services/monitoring_service.dart';
 import 'package:cropdect/theme.dart';
+import '../widgets/translated_text.dart';
 
 class MonitoringHistoryScreen extends StatefulWidget {
   final int diagnosisId;
@@ -70,12 +71,12 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
           builder: (ctx, setDialogState) {
             return AlertDialog(
               backgroundColor: AppTheme.surfaceContainerLowest,
-              title: Text('Expert Review', style: GoogleFonts.manrope(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+              title: TranslatedText('Expert Review', style: GoogleFonts.manrope(fontWeight: FontWeight.bold, color: AppTheme.primary)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Provide agronomic advice or feedback for this follow-up log.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant)),
+                  TranslatedText('Provide agronomic advice or feedback for this follow-up log.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant)),
                   const SizedBox(height: 16),
                   TextField(
                     controller: notesController,
@@ -92,7 +93,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(ctx),
-                  child: const Text('Cancel', style: TextStyle(color: AppTheme.outline)),
+                  child: const TranslatedText('Cancel', style: TextStyle(color: AppTheme.outline)),
                 ),
                 ElevatedButton(
                   onPressed: isSubmitting ? null : () async {
@@ -107,13 +108,13 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                       _fetchLogs();
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Expert review submitted successfully!'), backgroundColor: Color(0xFF1565C0)),
+                          const SnackBar(content: TranslatedText('Expert review submitted successfully!'), backgroundColor: Color(0xFF1565C0)),
                         );
                       }
                     } catch (e) {
                       setDialogState(() => isSubmitting = false);
                       if (ctx.mounted) {
-                        ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red));
+                        ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: TranslatedText('Error: $e'), backgroundColor: Colors.red));
                       }
                     }
                   },
@@ -124,7 +125,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                   ),
                   child: isSubmitting
                       ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('Submit Review', style: TextStyle(fontWeight: FontWeight.bold)),
+                      : const TranslatedText('Submit Review', style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
               ],
             );
@@ -176,7 +177,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Add Follow-Up Log', style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                        TranslatedText('Add Follow-Up Log', style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primary)),
                         IconButton(
                           onPressed: () => Navigator.pop(ctx),
                           icon: const Icon(Icons.close_rounded, color: AppTheme.outline),
@@ -186,7 +187,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                     const SizedBox(height: 16),
 
                     // Status Dropdown
-                    Text('Crop Health Status', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.onSurfaceVariant)),
+                    TranslatedText('Crop Health Status', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.onSurfaceVariant)),
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -200,10 +201,10 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                           isExpanded: true,
                           icon: const Icon(Icons.arrow_drop_down, color: AppTheme.primary),
                           items: [
-                            DropdownMenuItem(value: 'IMPROVING', child: Row(children: [Icon(Icons.trending_up_rounded, color: _getStatusColor('IMPROVING'), size: 18), const SizedBox(width: 8), const Text('Improving')])),
-                            DropdownMenuItem(value: 'NO_CHANGE', child: Row(children: [Icon(Icons.horizontal_rule_rounded, color: _getStatusColor('NO_CHANGE'), size: 18), const SizedBox(width: 8), const Text('No Change')])),
-                            DropdownMenuItem(value: 'WORSENING', child: Row(children: [Icon(Icons.trending_down_rounded, color: _getStatusColor('WORSENING'), size: 18), const SizedBox(width: 8), const Text('Worsening')])),
-                            DropdownMenuItem(value: 'RESOLVED', child: Row(children: [Icon(Icons.check_circle_rounded, color: _getStatusColor('RESOLVED'), size: 18), const SizedBox(width: 8), const Text('Resolved (Cured)')])),
+                            DropdownMenuItem(value: 'IMPROVING', child: Row(children: [Icon(Icons.trending_up_rounded, color: _getStatusColor('IMPROVING'), size: 18), const SizedBox(width: 8), const TranslatedText('Improving')])),
+                            DropdownMenuItem(value: 'NO_CHANGE', child: Row(children: [Icon(Icons.horizontal_rule_rounded, color: _getStatusColor('NO_CHANGE'), size: 18), const SizedBox(width: 8), const TranslatedText('No Change')])),
+                            DropdownMenuItem(value: 'WORSENING', child: Row(children: [Icon(Icons.trending_down_rounded, color: _getStatusColor('WORSENING'), size: 18), const SizedBox(width: 8), const TranslatedText('Worsening')])),
+                            DropdownMenuItem(value: 'RESOLVED', child: Row(children: [Icon(Icons.check_circle_rounded, color: _getStatusColor('RESOLVED'), size: 18), const SizedBox(width: 8), const TranslatedText('Resolved (Cured)')])),
                           ],
                           onChanged: (val) {
                             if (val != null) setSheetState(() => healthStatus = val);
@@ -214,7 +215,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                     const SizedBox(height: 16),
 
                     // Image Picker
-                    Text('Current Photo (Optional)', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.onSurfaceVariant)),
+                    TranslatedText('Current Photo (Optional)', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.onSurfaceVariant)),
                     const SizedBox(height: 8),
                     if (selectedImage == null && selectedXFile == null)
                       Row(
@@ -230,7 +231,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                                 }
                               },
                               icon: const Icon(Icons.camera_alt_rounded, size: 18),
-                              label: const Text('Camera'),
+                              label: const TranslatedText('Camera'),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppTheme.primary,
                                 side: BorderSide(color: AppTheme.primary.withValues(alpha: 0.5)),
@@ -250,7 +251,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                                 }
                               },
                               icon: const Icon(Icons.photo_library_rounded, size: 18),
-                              label: const Text('Gallery'),
+                              label: const TranslatedText('Gallery'),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: AppTheme.primary,
                                 side: BorderSide(color: AppTheme.primary.withValues(alpha: 0.5)),
@@ -301,7 +302,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                     const SizedBox(height: 16),
 
                     // Notes
-                    Text('Observations', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.onSurfaceVariant)),
+                    TranslatedText('Observations', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.onSurfaceVariant)),
                     const SizedBox(height: 8),
                     TextField(
                       controller: notesController,
@@ -332,20 +333,20 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                             _fetchLogs();
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Follow-up log saved successfully!'), backgroundColor: Color(0xFF2E7D32)),
+                                const SnackBar(content: TranslatedText('Follow-up log saved successfully!'), backgroundColor: Color(0xFF2E7D32)),
                               );
                             }
                           } catch (e) {
                             setSheetState(() => isSubmitting = false);
                             if (ctx.mounted) {
-                              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red));
+                              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: TranslatedText('Error: $e'), backgroundColor: Colors.red));
                             }
                           }
                         },
                         icon: isSubmitting
                             ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                             : const Icon(Icons.save_rounded),
-                        label: Text(isSubmitting ? 'Saving...' : 'Save Log', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        label: TranslatedText(isSubmitting ? 'Saving...' : 'Save Log', style: const TextStyle(fontWeight: FontWeight.bold)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppTheme.primary,
                           foregroundColor: Colors.white,
@@ -370,7 +371,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: Text('Monitoring History', style: GoogleFonts.manrope(fontWeight: FontWeight.bold)),
+        title: TranslatedText('Monitoring History', style: GoogleFonts.manrope(fontWeight: FontWeight.bold)),
         backgroundColor: AppTheme.surfaceContainerLowest,
         elevation: 0,
       ),
@@ -390,14 +391,14 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                   children: [
                     const Icon(Icons.error_outline_rounded, size: 48, color: Colors.redAccent),
                     const SizedBox(height: 16),
-                    Text('Failed to load monitoring logs', style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16)),
+                    TranslatedText('Failed to load monitoring logs', style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 16)),
                     const SizedBox(height: 8),
-                    Text('${snapshot.error}', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.outline), textAlign: TextAlign.center),
+                    TranslatedText('${snapshot.error}', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.outline), textAlign: TextAlign.center),
                     const SizedBox(height: 16),
                     OutlinedButton.icon(
                       onPressed: _fetchLogs,
                       icon: const Icon(Icons.refresh_rounded),
-                      label: const Text('Retry'),
+                      label: const TranslatedText('Retry'),
                     ),
                   ],
                 ),
@@ -424,14 +425,14 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                         children: [
                           Icon(Icons.monitor_heart_outlined, size: 72, color: AppTheme.primary.withValues(alpha: 0.3)),
                           const SizedBox(height: 16),
-                          Text('No follow-up logs yet', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
+                          TranslatedText('No follow-up logs yet', style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
                           const SizedBox(height: 8),
-                          Text('Track the progress of your crop\nby adding follow-up reports over time.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline), textAlign: TextAlign.center),
+                          TranslatedText('Track the progress of your crop\nby adding follow-up reports over time.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline), textAlign: TextAlign.center),
                           const SizedBox(height: 24),
                           ElevatedButton.icon(
                             onPressed: _showAddLogSheet,
                             icon: const Icon(Icons.add_a_photo_rounded),
-                            label: const Text('Add First Log', style: TextStyle(fontWeight: FontWeight.bold)),
+                            label: const TranslatedText('Add First Log', style: TextStyle(fontWeight: FontWeight.bold)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppTheme.primary,
                               foregroundColor: Colors.white,
@@ -466,7 +467,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                     children: [
                       const Icon(Icons.timeline_rounded, color: AppTheme.primary, size: 20),
                       const SizedBox(width: 8),
-                      Text('${logs.length} follow-up${logs.length == 1 ? '' : 's'} recorded', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                      TranslatedText('${logs.length} follow-up${logs.length == 1 ? '' : 's'} recorded', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.primary)),
                     ],
                   ),
                 );
@@ -518,7 +519,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                TranslatedText(
                                   DateFormat('MMM dd, yyyy • hh:mm a').format(log.createdAt),
                                   style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline, fontWeight: FontWeight.w600),
                                 ),
@@ -533,7 +534,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                                     children: [
                                       Icon(_getStatusIcon(log.healthStatus), size: 14, color: statusColor),
                                       const SizedBox(width: 4),
-                                      Text(
+                                      TranslatedText(
                                         _getStatusLabel(log.healthStatus),
                                         style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: statusColor),
                                       ),
@@ -573,7 +574,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                                   children: [
                                     const Icon(Icons.notes_rounded, size: 16, color: AppTheme.outline),
                                     const SizedBox(width: 8),
-                                    Expanded(child: Text(log.notes!, style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurface))),
+                                    Expanded(child: TranslatedText(log.notes!, style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurface))),
                                   ],
                                 ),
                               ),
@@ -596,11 +597,11 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                                       children: [
                                         const Icon(Icons.verified_rounded, size: 16, color: Color(0xFF1565C0)),
                                         const SizedBox(width: 6),
-                                        Text('Expert Review', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
+                                        TranslatedText('Expert Review', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
                                       ],
                                     ),
                                     const SizedBox(height: 6),
-                                    Text(log.expertNotes!, style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF0D47A1), fontStyle: FontStyle.italic)),
+                                    TranslatedText(log.expertNotes!, style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF0D47A1), fontStyle: FontStyle.italic)),
                                   ],
                                 ),
                               ),
@@ -611,13 +612,13 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                                   Icon(Icons.schedule_rounded, size: 14, color: AppTheme.outline.withValues(alpha: 0.6)),
                                   const SizedBox(width: 4),
                                   Expanded(
-                                    child: Text('Awaiting expert review', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline.withValues(alpha: 0.6))),
+                                    child: TranslatedText('Awaiting expert review', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline.withValues(alpha: 0.6))),
                                   ),
                                   if (widget.isExpertMode)
                                     TextButton.icon(
                                       onPressed: () => _showExpertReviewDialog(log),
                                       icon: const Icon(Icons.add_comment_rounded, size: 14, color: Color(0xFF1565C0)),
-                                      label: Text('Add Review', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
+                                      label: TranslatedText('Add Review', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: const Color(0xFF1565C0))),
                                       style: TextButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                         minimumSize: Size.zero,
@@ -655,7 +656,7 @@ class _MonitoringHistoryScreenState extends State<MonitoringHistoryScreen> {
                   backgroundColor: AppTheme.primary,
                   foregroundColor: Colors.white,
                   icon: const Icon(Icons.add_a_photo_rounded),
-                  label: const Text('Add Log', style: TextStyle(fontWeight: FontWeight.bold)),
+                  label: const TranslatedText('Add Log', style: TextStyle(fontWeight: FontWeight.bold)),
                 );
               },
             ),

@@ -3,6 +3,7 @@ import 'dart:ui';
 import '../theme.dart';
 import '../api_client.dart';
 import 'detection_result_screen.dart';
+import '../widgets/translated_text.dart';
 
 class ConsultExpertScreen extends StatefulWidget {
   final int? highlightDiagnosisId;
@@ -101,7 +102,7 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
                 icon: const Icon(Icons.arrow_back_ios_rounded, color: AppTheme.primary),
                 onPressed: () => Navigator.pop(context),
               ),
-              title: const Text('Expert Consultations', style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold)),
+              title: const TranslatedText('Expert Consultations', style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.bold)),
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -131,9 +132,9 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Expert Review System', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.onPrimaryContainer)),
+                                TranslatedText('Expert Review System', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.onPrimaryContainer)),
                                 SizedBox(height: 4),
-                                Text('Scans with low AI confidence are automatically sent to agronomists for validation.', style: TextStyle(fontSize: 12, color: AppTheme.onPrimaryContainer)),
+                                TranslatedText('Scans with low AI confidence are automatically sent to agronomists for validation.', style: TextStyle(fontSize: 12, color: AppTheme.onPrimaryContainer)),
                               ],
                             ),
                           ),
@@ -141,7 +142,7 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    const Text('YOUR CONSULTATIONS', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                    const TranslatedText('YOUR CONSULTATIONS', style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
                     const SizedBox(height: 16),
                     FutureBuilder<List<dynamic>>(
                       future: _historyFuture,
@@ -186,9 +187,9 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
             child: const Icon(Icons.search_off_rounded, color: AppTheme.primary, size: 40),
           ),
           const SizedBox(height: 20),
-          const Text('No Expert Reviews Yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
+          const TranslatedText('No Expert Reviews Yet', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
           const SizedBox(height: 8),
-          const Text(
+          const TranslatedText(
             'When your crop scan requires expert validation, it will appear here. Scans with AI confidence below 85% are automatically flagged for expert review.',
             textAlign: TextAlign.center,
             style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 13),
@@ -249,11 +250,11 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
               children: [
                 Icon(_statusIcon(status), color: statusColor, size: 16),
                 const SizedBox(width: 8),
-                Expanded(child: Text(_statusLabel(status), style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 12))),
+                Expanded(child: TranslatedText(_statusLabel(status), style: TextStyle(color: statusColor, fontWeight: FontWeight.bold, fontSize: 12))),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                  child: Text(status.replaceAll('_', ' '), style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold)),
+                  child: TranslatedText(status.replaceAll('_', ' '), style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold)),
                 ),
               ],
             ),
@@ -276,10 +277,10 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.onSurface)),
+                      TranslatedText(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.onSurface)),
                       if (cropName.isNotEmpty) ...[
                         const SizedBox(height: 4),
-                        Text(cropName, style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
+                        TranslatedText(cropName, style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
                       ],
                       const SizedBox(height: 10),
                       Row(
@@ -305,7 +306,7 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
               child: const Row(children: [
                 Icon(Icons.access_time_rounded, color: Colors.orange, size: 14),
                 SizedBox(width: 8),
-                Expanded(child: Text('An agronomist will review this shortly. You will be notified.', style: TextStyle(color: Colors.orange, fontSize: 12))),
+                Expanded(child: TranslatedText('An agronomist will review this shortly. You will be notified.', style: TextStyle(color: Colors.orange, fontSize: 12))),
               ]),
             )
           else if (status == 'CONFIRMED' || status == 'CORRECTED' || status == 'LAB_REFERRED')
@@ -361,7 +362,7 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
                       Row(children: [
                         Icon(iconData, color: bgColor, size: 16),
                         const SizedBox(width: 8),
-                        Expanded(child: Text(titleText, style: TextStyle(color: bgColor, fontSize: 13, fontWeight: FontWeight.bold))),
+                        Expanded(child: TranslatedText(titleText, style: TextStyle(color: bgColor, fontSize: 13, fontWeight: FontWeight.bold))),
                       ]),
                       if (displayNotes.isNotEmpty) ...[
                         const SizedBox(height: 10),
@@ -382,7 +383,7 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
                                     Icon(Icons.biotech_rounded, size: 14, color: bgColor),
                                     const SizedBox(width: 6),
                                     Expanded(
-                                      child: Text(
+                                      child: TranslatedText(
                                         isLabResult ? 'OFFICIAL REPORT: ${labName.toUpperCase()}' : 
                                         isLabInstruction ? 'SAMPLING INSTRUCTIONS: ${labName.toUpperCase()}' :
                                         'LABORATORY UPDATE: ${labName.toUpperCase()}', 
@@ -393,7 +394,7 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
                                 ),
                                 const SizedBox(height: 8),
                               ],
-                              Text(
+                              TranslatedText(
                                 displayNotes,
                                 style: TextStyle(
                                   fontSize: 13, 
@@ -423,7 +424,7 @@ class _ConsultExpertScreenState extends State<ConsultExpertScreen> {
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, color: color, size: 11),
         const SizedBox(width: 4),
-        Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+        TranslatedText(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold)),
       ]),
     );
   }

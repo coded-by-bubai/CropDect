@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import '../api_client.dart';
 import '../main.dart';
 import 'login_screen.dart';
 import 'hotspot_map_screen.dart';
+import '../widgets/translated_text.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -143,7 +145,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               }
               if (snapshot.hasError || snapshot.data == null) {
                 return Center(
-                  child: Text('Error loading farmer details', style: GoogleFonts.inter(color: AppTheme.error)),
+                  child: TranslatedText('Error loading farmer details', style: GoogleFonts.inter(color: AppTheme.error)),
                 );
               }
 
@@ -186,11 +188,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TranslatedText(
                                 farmer['name'] ?? 'Farmer #${farmer['id']}',
                                 style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primary),
                               ),
-                              Text(
+                              TranslatedText(
                                 'Phone: ${farmer['phone']} ${farmer['email'] != null ? "• ${farmer['email']}" : ""}',
                                 style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                               ),
@@ -211,7 +213,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       padding: const EdgeInsets.all(20),
                       children: [
                         // Farms summary
-                        Text('REGISTERED FARMS (${farms.length})',
+                        TranslatedText('REGISTERED FARMS (${farms.length})',
                             style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: AppTheme.onSurfaceVariant)),
                         const SizedBox(height: 10),
                         if (farms.isEmpty)
@@ -221,7 +223,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                               color: AppTheme.surfaceContainerHigh.withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text('No farms registered yet.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline)),
+                            child: TranslatedText('No farms registered yet.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline)),
                           )
                         else
                           ...farms.map((f) {
@@ -240,15 +242,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(f['name'] ?? 'Farm',
+                                      TranslatedText(f['name'] ?? 'Farm',
                                           style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.primary)),
-                                      Text('${f['area']} Acres',
+                                      TranslatedText('${f['area']} Acres',
                                           style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurfaceVariant)),
                                     ],
                                   ),
                                   if (f['soil_type'] != null) ...[
                                     const SizedBox(height: 4),
-                                    Text('Soil: ${f['soil_type']}', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.outline)),
+                                    TranslatedText('Soil: ${f['soil_type']}', style: GoogleFonts.inter(fontSize: 12, color: AppTheme.outline)),
                                   ],
                                   if (crops.isNotEmpty) ...[
                                     const SizedBox(height: 8),
@@ -262,7 +264,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                             color: AppTheme.primaryContainer.withValues(alpha: 0.5),
                                             borderRadius: BorderRadius.circular(8),
                                           ),
-                                          child: Text('${c['crop_type']} ${c['variety'] != null ? "(${c['variety']})" : ""}',
+                                          child: TranslatedText('${c['crop_type']} ${c['variety'] != null ? "(${c['variety']})" : ""}',
                                               style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.primary)),
                                         );
                                       }).toList(),
@@ -276,7 +278,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         const SizedBox(height: 20),
 
                         // Scans history
-                        Text('AI SCAN & DIAGNOSIS WORK HISTORY (${scans.length})',
+                        TranslatedText('AI SCAN & DIAGNOSIS WORK HISTORY (${scans.length})',
                             style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: AppTheme.onSurfaceVariant)),
                         const SizedBox(height: 10),
                         if (scans.isEmpty)
@@ -286,7 +288,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                               color: AppTheme.surfaceContainerHigh.withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text('No scans submitted yet.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline)),
+                            child: TranslatedText('No scans submitted yet.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline)),
                           )
                         else
                           ...scans.map((s) {
@@ -324,15 +326,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
+                                        TranslatedText(
                                           s['label'] ?? 'Scan',
                                           style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.primary),
                                         ),
-                                        Text(
+                                        TranslatedText(
                                           'Crop: ${s['crop_name']} • Conf: $conf%',
                                           style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant),
                                         ),
-                                        Text(
+                                        TranslatedText(
                                           dateStr,
                                           style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline),
                                         ),
@@ -367,7 +369,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           elevation: 0,
                         ),
                         icon: const Icon(Icons.delete_outline),
-                        label: Text('Delete Farmer Account', style: GoogleFonts.manrope(fontWeight: FontWeight.bold)),
+                        label: TranslatedText('Delete Farmer Account', style: GoogleFonts.manrope(fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ),
@@ -401,7 +403,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               }
               if (snapshot.hasError || snapshot.data == null) {
                 return Center(
-                  child: Text('Error loading expert details', style: GoogleFonts.inter(color: AppTheme.error)),
+                  child: TranslatedText('Error loading expert details', style: GoogleFonts.inter(color: AppTheme.error)),
                 );
               }
 
@@ -440,11 +442,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              TranslatedText(
                                 expert['name'] ?? 'Agronomist #${expert['id']}',
                                 style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold, color: AppTheme.primary),
                               ),
-                              Text(
+                              TranslatedText(
                                 'Phone: ${expert['phone']} • Completed: ${expert['reviews_completed']} reviews',
                                 style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                               ),
@@ -464,7 +466,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     child: ListView(
                       padding: const EdgeInsets.all(20),
                       children: [
-                        Text('EXPERT VALIDATION & TRIAGE WORK LOG (${validations.length})',
+                        TranslatedText('EXPERT VALIDATION & TRIAGE WORK LOG (${validations.length})',
                             style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: AppTheme.onSurfaceVariant)),
                         const SizedBox(height: 10),
                         if (validations.isEmpty)
@@ -474,7 +476,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                               color: AppTheme.surfaceContainerHigh.withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Text('No validation reviews submitted yet.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline)),
+                            child: TranslatedText('No validation reviews submitted yet.', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.outline)),
                           )
                         else
                           ...validations.map((v) {
@@ -496,7 +498,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      TranslatedText(
                                         'Case #${v['diagnosis_id']} • ${v['crop_name']}',
                                         style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 14, color: AppTheme.primary),
                                       ),
@@ -506,7 +508,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                           color: isCorrect ? const Color(0xFFE8F5E9) : const Color(0xFFFFF3E0),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
-                                        child: Text(
+                                        child: TranslatedText(
                                           isCorrect ? 'CONFIRMED' : 'CORRECTED',
                                           style: GoogleFonts.inter(
                                             fontSize: 10,
@@ -518,17 +520,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 4),
-                                  Text(
+                                  TranslatedText(
                                     'Assessment: ${v['disease_name'] ?? "Reviewed"}',
                                     style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurface),
                                   ),
                                   if (v['expert_notes'] != null && (v['expert_notes'] as String).isNotEmpty) ...[
                                     const SizedBox(height: 4),
-                                    Text('Notes: "${v['expert_notes']}"',
+                                    TranslatedText('Notes: "${v['expert_notes']}"',
                                         style: GoogleFonts.inter(fontSize: 11, fontStyle: FontStyle.italic, color: AppTheme.onSurfaceVariant)),
                                   ],
                                   const SizedBox(height: 4),
-                                  Text(dateStr, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
+                                  TranslatedText(dateStr, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
                                 ],
                               ),
                             );
@@ -556,7 +558,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                           elevation: 0,
                         ),
                         icon: const Icon(Icons.delete_outline),
-                        label: Text('Delete Expert Account', style: GoogleFonts.manrope(fontWeight: FontWeight.bold)),
+                        label: TranslatedText('Delete Expert Account', style: GoogleFonts.manrope(fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ),
@@ -574,15 +576,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppTheme.surfaceContainerLowest,
-        title: Text('Delete $role?', style: GoogleFonts.manrope(fontWeight: FontWeight.bold, color: AppTheme.error)),
-        content: Text(
+        title: TranslatedText('Delete $role?', style: GoogleFonts.manrope(fontWeight: FontWeight.bold, color: AppTheme.error)),
+        content: TranslatedText(
           'Are you sure you want to permanently delete this user? All their farms, crops, and diagnostic history will be erased. This action cannot be undone.',
           style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold)),
+            child: TranslatedText('Cancel', style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -590,7 +592,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               backgroundColor: AppTheme.error,
               foregroundColor: AppTheme.onError,
             ),
-            child: Text('Delete', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+            child: TranslatedText('Delete', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -601,12 +603,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         await apiClient.delete('/admin/users/$userId');
         if (mounted) {
           Navigator.pop(context); // Close the details modal
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$role deleted successfully.')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText('$role deleted successfully.')));
           _fetchAdminData(); // Refresh lists
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to delete $role: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText('Failed to delete $role: $e')));
         }
       }
     }
@@ -641,7 +643,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
-      child: Text(text, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: fg)),
+      child: TranslatedText(text, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: fg)),
     );
   }
 
@@ -689,7 +691,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         children: [
                           const Icon(Icons.security_rounded, size: 14, color: Colors.white),
                           const SizedBox(width: 4),
-                          Text('CENTRAL OVERSIGHT',
+                          TranslatedText('CENTRAL OVERSIGHT',
                               style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.1)),
                         ],
                       ),
@@ -700,15 +702,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                         color: const Color(0xFF81FF45).withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text('LIVE', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: const Color(0xFF81FF45))),
+                      child: TranslatedText('LIVE', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: const Color(0xFF81FF45))),
                     ),
                   ],
                 ),
                 const SizedBox(height: 14),
-                Text('cropdect Operations Hub',
+                TranslatedText('cropdect Operations Hub',
                     style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                 const SizedBox(height: 4),
-                Text('Monitoring all agricultural producers, agronomist reviews, and field diagnoses.',
+                TranslatedText('Monitoring all agricultural producers, agronomist reviews, and field diagnoses.',
                     style: GoogleFonts.inter(fontSize: 12, color: Colors.white.withValues(alpha: 0.85))),
               ],
             ),
@@ -803,6 +805,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           ),
 
           const SizedBox(height: 24),
+          _buildScansChart(),
+          const SizedBox(height: 24),
 
           // Live Activity Stream
           Wrap(
@@ -811,7 +815,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             spacing: 12,
             runSpacing: 12,
             children: [
-              Text('LIVE AUDIT STREAM (WHO DID WHAT)',
+              TranslatedText('LIVE AUDIT STREAM (WHO DID WHAT)',
                   style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: AppTheme.onSurfaceVariant)),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -835,7 +839,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       items: ['All', 'Today', 'Yesterday', 'Custom'].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value),
+                          child: TranslatedText(value),
                         );
                       }).toList(),
                       onChanged: (newValue) {
@@ -850,7 +854,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Text('${_filteredActivityLog.length} events', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
+                  TranslatedText('${_filteredActivityLog.length} events', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
                 ],
               ),
             ],
@@ -868,7 +872,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: AppTheme.outlineVariant),
                   ),
-                  child: Text('No system activity recorded for this period.', style: GoogleFonts.inter(color: AppTheme.outline, fontSize: 13)),
+                  child: TranslatedText('No system activity recorded for this period.', style: GoogleFonts.inter(color: AppTheme.outline, fontSize: 13)),
                 );
               }
 
@@ -877,11 +881,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   ...filtered.map((act) {
                     final isScan = act['type'] == 'SCAN';
                     final isLab = act['type'] == 'LAB';
+                    final isSystem = act['type'] == 'SYSTEM';
                     final timeStr = act['timestamp'] != null
                         ? DateFormat('dd MMM, hh:mm a').format(DateTime.parse(act['timestamp']).toLocal())
                         : '';
                     
-                    Color iconBgColor = const Color(0xFFE3F2FD);
+                    Color iconBgColor = const Color(0xFFE3F2FD); // Default for REVIEW
                     Color iconColor = const Color(0xFF1976D2);
                     IconData iconData = Icons.verified_user_rounded;
                     
@@ -893,6 +898,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       iconBgColor = const Color(0xFFFFF3E0);
                       iconColor = const Color(0xFFE65100);
                       iconData = Icons.science_rounded;
+                    } else if (isSystem) {
+                      iconBgColor = const Color(0xFFF3E5F5);
+                      iconColor = const Color(0xFF7B1FA2);
+                      iconData = Icons.add_circle_outline_rounded;
                     }
 
                     return Container(
@@ -927,7 +936,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
+                                    TranslatedText(
                                       act['user_name'] ?? 'User',
                                       style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.primary),
                                     ),
@@ -941,7 +950,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                                 : const Color(0xFFE8F5E9),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
-                                      child: Text(
+                                      child: TranslatedText(
                                         act['user_role'] ?? 'USER',
                                         style: GoogleFonts.inter(
                                           fontSize: 9,
@@ -957,11 +966,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 2),
-                                Text(act['title'] ?? '', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+                                TranslatedText(act['title'] ?? '', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
                                 const SizedBox(height: 2),
-                                Text(act['description'] ?? '', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant)),
+                                TranslatedText(act['description'] ?? '', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant)),
                                 const SizedBox(height: 4),
-                                Text(timeStr, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
+                                TranslatedText(timeStr, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
                               ],
                             ),
                           ),
@@ -1008,12 +1017,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.onSurfaceVariant)),
+              TranslatedText(title, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.onSurfaceVariant)),
               Icon(icon, color: color, size: 20),
             ],
           ),
-          Text(count, style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.primary)),
-          Text(subtitle, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
+          TranslatedText(count, style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.primary)),
+          TranslatedText(subtitle, style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
         ],
       ),
     );
@@ -1053,9 +1062,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('PRODUCERS DIRECTORY (${filtered.length})',
+              TranslatedText('PRODUCERS DIRECTORY (${filtered.length})',
                   style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: AppTheme.onSurfaceVariant)),
-              Text('Tap to view farms & scans', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
+              TranslatedText('Tap to view farms & scans', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
             ],
           ),
         ),
@@ -1105,11 +1114,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TranslatedText(
                                       f['name'] ?? 'Farmer #${f['id']}',
                                       style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.primary),
                                     ),
-                                    Text(
+                                    TranslatedText(
                                       'Phone: ${f['phone']}',
                                       style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                                     ),
@@ -1129,7 +1138,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 children: [
                                   const Icon(Icons.landscape_rounded, size: 15, color: AppTheme.outline),
                                   const SizedBox(width: 4),
-                                  Text('${f['farm_count']} Farms',
+                                  TranslatedText('${f['farm_count']} Farms',
                                       style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
                                 ],
                               ),
@@ -1137,11 +1146,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 children: [
                                   const Icon(Icons.document_scanner_rounded, size: 15, color: AppTheme.outline),
                                   const SizedBox(width: 4),
-                                  Text('${f['scan_count']} AI Scans',
+                                  TranslatedText('${f['scan_count']} AI Scans',
                                       style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
                                 ],
                               ),
-                              Text('Last: $lastScanStr', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
+                              TranslatedText('Last: $lastScanStr', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
                             ],
                           ),
                           if (f['last_disease'] != null) ...[
@@ -1152,7 +1161,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 color: AppTheme.surfaceContainerHigh.withValues(alpha: 0.5),
                                 borderRadius: BorderRadius.circular(6),
                               ),
-                              child: Text('Latest detected: ${f['last_disease']}',
+                              child: TranslatedText('Latest detected: ${f['last_disease']}',
                                   style: GoogleFonts.inter(fontSize: 11, color: AppTheme.primary, fontWeight: FontWeight.w500)),
                             ),
                           ],
@@ -1202,9 +1211,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('AGRONOMISTS & EXPERTS (${filtered.length})',
+              TranslatedText('AGRONOMISTS & EXPERTS (${filtered.length})',
                   style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: AppTheme.onSurfaceVariant)),
-              Text('Tap to view review work log', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
+              TranslatedText('Tap to view review work log', style: GoogleFonts.inter(fontSize: 10, color: AppTheme.outline)),
             ],
           ),
         ),
@@ -1254,11 +1263,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    TranslatedText(
                                       exp['name'] ?? 'Agronomist #${exp['id']}',
                                       style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.primary),
                                     ),
-                                    Text(
+                                    TranslatedText(
                                       'Phone: ${exp['phone']}',
                                       style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                                     ),
@@ -1278,11 +1287,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                                 children: [
                                   const Icon(Icons.verified_rounded, size: 15, color: Color(0xFF2E7D32)),
                                   const SizedBox(width: 4),
-                                  Text('${exp['reviews_completed']} Reviews Done',
+                                  TranslatedText('${exp['reviews_completed']} Reviews Done',
                                       style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
                                 ],
                               ),
-                              Text('Last review: $lastReviewStr', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
+                              TranslatedText('Last review: $lastReviewStr', style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
                             ],
                           ),
                         ],
@@ -1317,13 +1326,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                 child: const Icon(Icons.security_rounded, size: 40, color: AppTheme.primary),
               ),
               const SizedBox(height: 14),
-              Text('System Administrator', style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primary)),
-              Text('Full Oversight & Auditing Access', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant)),
+              TranslatedText('System Administrator', style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primary)),
+              TranslatedText('Full Oversight & Auditing Access', style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant)),
               const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(color: const Color(0xFF1B381A), borderRadius: BorderRadius.circular(12)),
-                child: Text('ROLE: SYSTEM ADMIN',
+                child: TranslatedText('ROLE: SYSTEM ADMIN',
                     style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white, letterSpacing: 1.1)),
               ),
             ],
@@ -1342,7 +1351,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('SYSTEM ARCHITECTURE & STATUS',
+              TranslatedText('SYSTEM ARCHITECTURE & STATUS',
                   style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1.1, color: AppTheme.onSurfaceVariant)),
               const SizedBox(height: 12),
               _buildStatusRow('PostgreSQL Core DB', 'CONNECTED (Localhost)', Icons.check_circle_rounded, const Color(0xFF2E7D32)),
@@ -1367,7 +1376,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),
           icon: const Icon(Icons.logout_rounded),
-          label: Text('Sign Out of Admin Console', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+          label: TranslatedText('Sign Out of Admin Console', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
           onPressed: () async {
             await Provider.of<AuthState>(context, listen: false).logout();
             if (mounted) {
@@ -1387,8 +1396,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       children: [
         Icon(icon, size: 16, color: color),
         const SizedBox(width: 8),
-        Expanded(child: Text(title, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500))),
-        Text(status, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: color)),
+        Expanded(child: TranslatedText(title, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500))),
+        TranslatedText(status, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: color)),
       ],
     );
   }
@@ -1401,7 +1410,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       backgroundColor: AppTheme.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(
+        title: TranslatedText(
           titles[_currentTabIndex],
           style: GoogleFonts.manrope(fontWeight: FontWeight.w800, fontSize: 18, color: AppTheme.primary),
         ),
@@ -1426,12 +1435,12 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                       children: [
                         const Icon(Icons.error_outline_rounded, size: 48, color: AppTheme.error),
                         const SizedBox(height: 12),
-                        Text(_errorMessage!, textAlign: TextAlign.center, style: GoogleFonts.inter(color: AppTheme.error)),
+                        TranslatedText(_errorMessage!, textAlign: TextAlign.center, style: GoogleFonts.inter(color: AppTheme.error)),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _fetchAdminData,
                           style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primary),
-                          child: const Text('Retry', style: TextStyle(color: Colors.white)),
+                          child: const TranslatedText('Retry', style: TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),
@@ -1477,6 +1486,80 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             icon: Icon(Icons.admin_panel_settings_outlined),
             selectedIcon: Icon(Icons.admin_panel_settings_rounded, color: AppTheme.primary),
             label: 'Profile',
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildScansChart() {
+    // Generate mock data for the last 7 days for the chart
+    return Container(
+      width: double.infinity,
+      height: 300,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TranslatedText('Scan Diagnostics (Last 7 Days)', 
+            style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.primary)),
+          const SizedBox(height: 20),
+          Expanded(
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: 50,
+                barTouchData: BarTouchData(enabled: false),
+                titlesData: FlTitlesData(
+                  show: true,
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (value, meta) {
+                        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(days[value.toInt() % 7], style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant)),
+                        );
+                      },
+                      reservedSize: 30,
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 30,
+                      getTitlesWidget: (value, meta) {
+                        return Text(value.toInt().toString(), style: GoogleFonts.inter(fontSize: 12, color: AppTheme.outline));
+                      },
+                    ),
+                  ),
+                  topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                ),
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  getDrawingHorizontalLine: (value) => FlLine(color: AppTheme.outlineVariant.withOpacity(0.2), strokeWidth: 1),
+                ),
+                borderData: FlBorderData(show: false),
+                barGroups: [
+                  BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 15, color: const Color(0xFF2E7D32), width: 16, borderRadius: BorderRadius.circular(4))]),
+                  BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 25, color: const Color(0xFF2E7D32), width: 16, borderRadius: BorderRadius.circular(4))]),
+                  BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 10, color: const Color(0xFF2E7D32), width: 16, borderRadius: BorderRadius.circular(4))]),
+                  BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 30, color: const Color(0xFF2E7D32), width: 16, borderRadius: BorderRadius.circular(4))]),
+                  BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 20, color: const Color(0xFF2E7D32), width: 16, borderRadius: BorderRadius.circular(4))]),
+                  BarChartGroupData(x: 5, barRods: [BarChartRodData(toY: 45, color: const Color(0xFF2E7D32), width: 16, borderRadius: BorderRadius.circular(4))]),
+                  BarChartGroupData(x: 6, barRods: [BarChartRodData(toY: 35, color: const Color(0xFF2E7D32), width: 16, borderRadius: BorderRadius.circular(4))]),
+                ],
+              ),
+            ),
           ),
         ],
       ),

@@ -36,3 +36,7 @@ Thumbs.db
 htmlcov/
 .coverage
 .tox/
+
+# Secrets
+google-services.json
+firebase_service_account.json

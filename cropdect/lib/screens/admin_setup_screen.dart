@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../theme.dart';
 import '../api_client.dart';
 import 'login_screen.dart';
+import '../widgets/translated_text.dart';
 
 class AdminSetupScreen extends StatefulWidget {
   const AdminSetupScreen({super.key});
@@ -108,7 +109,7 @@ class _AdminSetupScreenState extends State<AdminSetupScreen> {
           icon: const Icon(Icons.arrow_back_ios_rounded, color: AppTheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: const TranslatedText(
           'Admin Setup',
           style: TextStyle(
             color: AppTheme.onSurface,
@@ -162,7 +163,7 @@ class _AdminSetupScreenState extends State<AdminSetupScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    const Text(
+                    const TranslatedText(
                       'Create Admin Account',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -172,7 +173,7 @@ class _AdminSetupScreenState extends State<AdminSetupScreen> {
                       ),
                     ),
                     const SizedBox(height: 6),
-                    const Text(
+                    const TranslatedText(
                       'Requires the system admin secret key.\nContact your system administrator if you don\'t have it.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -277,7 +278,7 @@ class _AdminSetupScreenState extends State<AdminSetupScreen> {
                               )
                             : const Icon(Icons.verified_user_rounded,
                                 color: Colors.white),
-                        label: Text(
+                        label: TranslatedText(
                           _isLoading ? 'Creating Account…' : 'Create Admin Account',
                           style: const TextStyle(
                             color: Colors.white,
@@ -299,7 +300,7 @@ class _AdminSetupScreenState extends State<AdminSetupScreen> {
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text(
+                      child: const TranslatedText(
                         'Back to Login',
                         style: TextStyle(color: AppTheme.primary),
                       ),
@@ -336,7 +337,7 @@ class _AdminSetupScreenState extends State<AdminSetupScreen> {
           ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(
+            child: TranslatedText(
               msg,
               style: TextStyle(
                 color: isError ? AppTheme.onErrorContainer : const Color(0xFF1B4332),

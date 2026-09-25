@@ -1,10 +1,11 @@
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 from app.api import deps
 from app.schemas.expert import ExpertValidationCreate, ExpertValidationResponse
 from app.schemas.diagnosis import DiagnosisResponse
 from app.services import expert_service
+from app.services.predictive_alert_service import run_predictive_weather_scan_background
 from app.models.user import User, UserRole
 
 router = APIRouter()
@@ -53,10 +54,16 @@ def get_completed_cases(
 @router.post("/validations", response_model=ExpertValidationResponse)
 def submit_validation(
     validation_in: ExpertValidationCreate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(deps.get_db),
     current_user: User = Depends(get_expert_user)
 ) -> Any:
     """
     Submit an expert validation for a diagnosis.
     """
-    return expert_service.submit_validation(db=db, expert_id=current_user.id, validation_in=validation_in)
+    result = expert_service.submit_validation(db=db, expert_id=current_user.id, validation_in=validation_in)
+    
+    # Trigger the AI Predictive Weather Scan in the background
+    background_tasks.add_task(run_predictive_weather_scan_background)
+    
+    return result

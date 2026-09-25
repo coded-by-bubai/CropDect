@@ -203,6 +203,18 @@ def process_image_upload(
     if confidence_score < 0.85:
         calc_status = DiagnosisStatus.EXPERT_REVIEW
 
+    # Fetch Weather Snapshot for Predictive Alert System
+    infection_temp_c = None
+    infection_humidity_percent = None
+    try:
+        from app.services.weather_service import fetch_weather_for_farm
+        weather = fetch_weather_for_farm(db, farm.id, owner_id)
+        if weather:
+            infection_temp_c = weather.current_temp_c
+            infection_humidity_percent = weather.current_humidity_percent
+    except Exception as e:
+        logger.error(f"Failed to fetch weather for diagnosis snapshot: {e}")
+
     db_report = DiagnosisReport(
         crop_id=crop_id,
         image_url=image_url,
@@ -213,7 +225,9 @@ def process_image_upload(
         severity=calc_severity,
         status=calc_status,
         location=wkt_point,
-        model_version=prediction["class_name"]  # Store raw class for label parsing
+        model_version=prediction["class_name"],  # Store raw class for label parsing
+        infection_temp_c=infection_temp_c,
+        infection_humidity_percent=infection_humidity_percent
     )
     
     db.add(db_report)

@@ -5,6 +5,7 @@ import '../api_client.dart';
 import 'dashboard_screen.dart';
 import 'expert_home_screen.dart';
 import 'admin_dashboard_screen.dart';
+import '../widgets/translated_text.dart';
 
 class RoleDispatcherScreen extends StatefulWidget {
   const RoleDispatcherScreen({super.key});
@@ -73,7 +74,7 @@ class _RoleDispatcherScreenState extends State<RoleDispatcherScreen> {
             const SizedBox(height: 20),
             const CircularProgressIndicator(color: AppTheme.primary),
             const SizedBox(height: 12),
-            const Text(
+            const TranslatedText(
               'Loading your workspace...',
               style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 13),
             ),

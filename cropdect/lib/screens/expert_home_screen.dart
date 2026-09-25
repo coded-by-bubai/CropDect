@@ -7,6 +7,7 @@ import '../main.dart';
 import 'login_screen.dart';
 import 'expert_review_screen.dart';
 import 'hotspot_map_screen.dart';
+import '../widgets/translated_text.dart';
 
 class ExpertHomeScreen extends StatefulWidget {
   const ExpertHomeScreen({super.key});
@@ -48,7 +49,7 @@ class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
     return Scaffold(
       backgroundColor: AppTheme.background,
       appBar: AppBar(
-        title: Text(
+        title: TranslatedText(
           'Agronomist Profile',
           style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 18, color: AppTheme.primary),
         ),
@@ -74,12 +75,12 @@ class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
                         child: const Icon(Icons.biotech_rounded, size: 44, color: Color(0xFF1E88E5)),
                       ),
                       const SizedBox(height: 14),
-                      Text(
+                      TranslatedText(
                         name,
                         style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.primary),
                       ),
                       const SizedBox(height: 4),
-                      Text(
+                      TranslatedText(
                         'Authorized Plant Pathologist / Agronomist',
                         style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant),
                       ),
@@ -90,7 +91,7 @@ class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
                           color: const Color(0xFFE3F2FD),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text(
+                        child: TranslatedText(
                           'ROLE: EXPERT',
                           style: GoogleFonts.inter(
                             fontSize: 10,
@@ -116,7 +117,7 @@ class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TranslatedText(
                         'EXPERT CREDENTIALS & WORKSPACE',
                         style: GoogleFonts.inter(
                           fontSize: 11,
@@ -153,7 +154,7 @@ class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
                       const Icon(Icons.info_outline_rounded, color: Color(0xFF2E7D32), size: 20),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: Text(
+                        child: TranslatedText(
                           'Your expert role gives you direct access to review uncertain farmer diagnoses, correct diseases against the national crop repository, and dispatch samples to diagnostic laboratories.',
                           style: GoogleFonts.inter(fontSize: 12, color: const Color(0xFF1B5E20), height: 1.4),
                         ),
@@ -173,7 +174,7 @@ class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   icon: const Icon(Icons.logout_rounded),
-                  label: Text('Sign Out', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+                  label: TranslatedText('Sign Out', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
                   onPressed: () async {
                     await Provider.of<AuthState>(context, listen: false).logout();
                     if (mounted) {
@@ -198,8 +199,8 @@ class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
-              Text(value, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
+              TranslatedText(label, style: GoogleFonts.inter(fontSize: 11, color: AppTheme.outline)),
+              TranslatedText(value, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppTheme.onSurface)),
             ],
           ),
         ),

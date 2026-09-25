@@ -4,6 +4,7 @@ import '../theme.dart';
 import '../api_client.dart';
 import 'hotspot_map_screen.dart';
 import 'expert_review_screen.dart';
+import '../widgets/translated_text.dart';
 
 class OfficerDashboardScreen extends StatefulWidget {
   const OfficerDashboardScreen({super.key});
@@ -70,7 +71,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                   icon: const Icon(Icons.arrow_back_ios_rounded, color: AppTheme.primary, size: 20),
                   onPressed: () => Navigator.pop(context),
                 ),
-                title: Text(
+                title: TranslatedText(
                   'Agricultural Officer Command',
                   style: GoogleFonts.manrope(fontWeight: FontWeight.w800, fontSize: 17, color: AppTheme.primary),
                 ),
@@ -92,7 +93,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Subtitle
-                      Text(
+                      TranslatedText(
                         'REGIONAL SURVEILLANCE & PLANNING',
                         style: GoogleFonts.inter(
                           fontSize: 11,
@@ -102,7 +103,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
+                      TranslatedText(
                         'Pest & Crop Health Analytics',
                         style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.onSurface),
                       ),
@@ -121,13 +122,13 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                               children: [
                                 const Icon(Icons.shield_outlined, size: 48, color: Colors.orange),
                                 const SizedBox(height: 12),
-                                Text(
+                                TranslatedText(
                                   _errorMessage!,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurface),
                                 ),
                                 const SizedBox(height: 14),
-                                ElevatedButton(onPressed: _fetchDashboardData, child: const Text('Retry')),
+                                ElevatedButton(onPressed: _fetchDashboardData, child: const TranslatedText('Retry')),
                               ],
                             ),
                           ),
@@ -220,12 +221,12 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      TranslatedText(
                                         'Open Geospatial Hotspot Map',
                                         style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
                                       ),
                                       const SizedBox(height: 2),
-                                      Text(
+                                      TranslatedText(
                                         'View GIS heatmaps & disease clusters in real time',
                                         style: GoogleFonts.inter(fontSize: 11, color: Colors.white70),
                                       ),
@@ -266,11 +267,11 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(
+                                      TranslatedText(
                                         'Triage & Agronomist Queue',
                                         style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                                       ),
-                                      Text(
+                                      TranslatedText(
                                         'Validate farmer scans & refer samples to laboratory',
                                         style: GoogleFonts.inter(fontSize: 11, color: AppTheme.onSurfaceVariant),
                                       ),
@@ -286,7 +287,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                         const SizedBox(height: 28),
 
                         // ── TOP 10 DISEASE DISTRIBUTION ────────────────────────────
-                        Text(
+                        TranslatedText(
                           'TOP REGIONAL THREATS',
                           style: GoogleFonts.inter(
                             fontSize: 11,
@@ -296,7 +297,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                           ),
                         ),
                         const SizedBox(height: 6),
-                        Text(
+                        TranslatedText(
                           'Disease & Pest Frequency Distribution',
                           style: GoogleFonts.manrope(fontSize: 17, fontWeight: FontWeight.w800, color: AppTheme.onSurface),
                         ),
@@ -311,7 +312,7 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
                               border: Border.all(color: AppTheme.outlineVariant.withValues(alpha: 0.3)),
                             ),
                             child: Center(
-                              child: Text(
+                              child: TranslatedText(
                                 'No disease reports recorded in this period yet.',
                                 style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant),
                               ),
@@ -363,12 +364,12 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
             child: Icon(icon, color: iconColor, size: 20),
           ),
           const SizedBox(height: 12),
-          Text(
+          TranslatedText(
             value,
             style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.onSurface),
           ),
           const SizedBox(height: 2),
-          Text(
+          TranslatedText(
             title,
             style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppTheme.onSurfaceVariant),
           ),
@@ -404,13 +405,13 @@ class _OfficerDashboardScreenState extends State<OfficerDashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: Text(
+                  child: TranslatedText(
                     name,
                     style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Text(
+                TranslatedText(
                   '$count reports',
                   style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primary),
                 ),

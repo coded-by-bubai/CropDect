@@ -15,6 +15,9 @@ import 'monitoring_history_screen.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:translator/translator.dart';
 import 'dart:typed_data';
+import 'package:provider/provider.dart';
+import '../main.dart';
+import '../widgets/translated_text.dart';
 
 class DetectionResultScreen extends StatefulWidget {
   final Map<String, dynamic>? resultData;
@@ -29,6 +32,7 @@ class DetectionResultScreen extends StatefulWidget {
 }
 
 class _DetectionResultScreenState extends State<DetectionResultScreen> with TickerProviderStateMixin {
+  late LanguageState _localLangState;
   late AnimationController _pulseController;
   late AnimationController _entranceController;
   
@@ -76,6 +80,20 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
   @override
   void initState() {
     super.initState();
+    
+    // Initialize local language state for this screen ONLY, based on global setting
+    _localLangState = LanguageState('en'); // Will be updated in post frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final globalLang = context.read<LanguageState>().currentLanguage;
+        _localLangState = LanguageState(globalLang);
+        setState(() {
+          _selectedLanguage = globalLang;
+        });
+        _fetchIPMPlan(); // Re-fetch or translate based on new language
+      }
+    });
+
     _pulseController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -95,7 +113,6 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
 
     _entranceController.forward();
     _initTts();
-    _fetchIPMPlan();
   }
 
   void _initTts() {
@@ -134,11 +151,37 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
         _translatedIpmPlan = null;
         _translatedWarningLabel = null;
         _translatedSectionLabel = null;
+        _translatedIpmHeader = null;
+        _translatedImmediateActionsTitle = null;
+        _translatedCulturalPracticesTitle = null;
+        _translatedBiologicalControlsTitle = null;
+        _translatedChemicalControlsTitle = null;
+        _translatedListenButton = null;
+        _translatedStopButton = null;
+        _translatedTranslatingLabel = null;
       });
       return;
     }
 
     setState(() => _isTranslating = true);
+
+    String replaceDigits(String input, String langCode) {
+      if (langCode == 'en') return input;
+      const hindiDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+      const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      const teluguDigits = ['౦', '౧', '౨', '౩', '౪', '౫', '౬', '౭', '౮', '౯'];
+      
+      List<String>? targetDigits;
+      if (langCode == 'hi' || langCode == 'mr') targetDigits = hindiDigits;
+      else if (langCode == 'bn') targetDigits = bengaliDigits;
+      else if (langCode == 'te') targetDigits = teluguDigits;
+      
+      if (targetDigits == null) return input;
+      
+      String output = input;
+      for (int i = 0; i < 10; i++) output = output.replaceAll(i.toString(), targetDigits[i]);
+      return output;
+    }
 
     try {
       final severity = widget.resultData?['severity'] ?? 'MODERATE';
@@ -174,12 +217,12 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
             List<String> tList = [];
             for (var item in (entry.value as List)) {
               final tItem = await _translator.translate(item.toString(), to: _selectedLanguage);
-              tList.add(tItem.text);
+              tList.add(replaceDigits(tItem.text, _selectedLanguage));
             }
             tIpmPlan[entry.key] = tList;
           } else if (entry.value is String) {
             final tString = await _translator.translate(entry.value.toString(), to: _selectedLanguage);
-            tIpmPlan[entry.key] = tString.text;
+            tIpmPlan[entry.key] = replaceDigits(tString.text, _selectedLanguage);
           } else {
              tIpmPlan[entry.key] = entry.value;
           }
@@ -188,20 +231,20 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
 
       if (mounted) {
         setState(() {
-          _translatedDiseaseName = tLabel.text;
-          _translatedSeverityLabel = tSeverity.text;
-          _translatedActionPreview = tAction.text;
-          _translatedIpmPlan = tIpmPlan;
-          _translatedIpmHeader = tHeader.text;
-          _translatedImmediateActionsTitle = tImmediate.text;
-          _translatedCulturalPracticesTitle = tCultural.text;
-          _translatedBiologicalControlsTitle = tBiological.text;
-          _translatedChemicalControlsTitle = tChemical.text;
-          _translatedListenButton = tListen.text;
-          _translatedStopButton = tStop.text;
-          _translatedTranslatingLabel = tTranslating.text;
-          _translatedWarningLabel = tWarning.text;
-          _translatedSectionLabel = tSection.text;
+          _translatedDiseaseName = replaceDigits(tLabel.text, _selectedLanguage);
+          _translatedSeverityLabel = replaceDigits(tSeverity.text, _selectedLanguage);
+          _translatedActionPreview = replaceDigits(tAction.text, _selectedLanguage);
+          _translatedIpmPlan = tIpmPlan; // The items are translated below
+          _translatedIpmHeader = replaceDigits(tHeader.text, _selectedLanguage);
+          _translatedImmediateActionsTitle = replaceDigits(tImmediate.text, _selectedLanguage);
+          _translatedCulturalPracticesTitle = replaceDigits(tCultural.text, _selectedLanguage);
+          _translatedBiologicalControlsTitle = replaceDigits(tBiological.text, _selectedLanguage);
+          _translatedChemicalControlsTitle = replaceDigits(tChemical.text, _selectedLanguage);
+          _translatedListenButton = replaceDigits(tListen.text, _selectedLanguage);
+          _translatedStopButton = replaceDigits(tStop.text, _selectedLanguage);
+          _translatedTranslatingLabel = replaceDigits(tTranslating.text, _selectedLanguage);
+          _translatedWarningLabel = replaceDigits(tWarning.text, _selectedLanguage);
+          _translatedSectionLabel = replaceDigits(tSection.text, _selectedLanguage);
         });
       }
     } catch (_) {} 
@@ -293,7 +336,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
         await apiClient.post('/diagnostics/$diagnosisId/request-review');
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Scan submitted for Expert Agronomist verification!')),
+            const SnackBar(content: TranslatedText('Scan submitted for Expert Agronomist verification!')),
           );
         }
       } catch (_) {}
@@ -318,11 +361,14 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isDesktop = constraints.maxWidth >= 800;
-        return isDesktop ? _buildDesktopLayout(context) : _buildMobileLayout(context);
-      },
+    return ChangeNotifierProvider<LanguageState>.value(
+      value: _localLangState,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isDesktop = constraints.maxWidth >= 800;
+          return isDesktop ? _buildDesktopLayout(context) : _buildMobileLayout(context);
+        },
+      ),
     );
   }
 
@@ -399,10 +445,10 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('ANALYZED CROP',
+                                TranslatedText('ANALYZED CROP',
                                     style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white60, letterSpacing: 1.5)),
                                 const SizedBox(height: 4),
-                                Text(widget.resultData?['crop_name'] ?? 'Unknown Crop',
+                                TranslatedText(widget.resultData?['crop_name'] ?? 'Unknown Crop',
                                     style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                               ],
                             ),
@@ -415,10 +461,10 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                               ),
                               child: Column(
                                 children: [
-                                  Text('AI CONFIDENCE',
+                                  TranslatedText('AI CONFIDENCE',
                                       style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.white70, letterSpacing: 1.0)),
                                   const SizedBox(height: 2),
-                                  Text(
+                                  TranslatedText(
                                     widget.resultData != null ? '${((widget.resultData!['confidence'] ?? 0.984) * 100).toStringAsFixed(1)}%' : '98.4%',
                                     style: GoogleFonts.robotoMono(fontSize: 20, fontWeight: FontWeight.w800, color: Colors.greenAccent),
                                   ),
@@ -450,7 +496,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Detection Results',
+                      TranslatedText('Detection Results',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w800, color: AppTheme.onSurface)),
@@ -480,7 +526,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                                   ));
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Please save the diagnosis first before monitoring.')),
+                                    const SnackBar(content: TranslatedText('Please save the diagnosis first before monitoring.')),
                                   );
                                 }
                               },
@@ -489,7 +535,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                             ElevatedButton.icon(
                               onPressed: _requestExpertReviewAndNavigate,
                               icon: const Icon(Icons.support_agent_rounded, size: 16),
-                              label: Text('Consult Expert', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
+                              label: TranslatedText('Consult Expert', style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primary,
                                 foregroundColor: Colors.white,
@@ -540,7 +586,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
     return OutlinedButton.icon(
       onPressed: onTap,
       icon: Icon(icon, size: 16, color: AppTheme.primary),
-      label: Text(label, style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold)),
+      label: TranslatedText(label, style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold)),
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: AppTheme.primary.withValues(alpha: 0.4)),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -575,7 +621,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(8)),
-                      child: Text(
+                      child: TranslatedText(
                         _translatedSeverityLabel ?? (isHealthy ? 'ALL CLEAR' : 'DETECTED ${severity.toUpperCase()}'),
                         style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.5)),
                     ),
@@ -583,11 +629,11 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(_translatedDiseaseName ?? label,
+                TranslatedText(_translatedDiseaseName ?? label,
                     style: GoogleFonts.manrope(fontSize: 36, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1)),
                 const SizedBox(height: 8),
                 if (isHealthy)
-                  Text(_translatedActionPreview ?? 'No disease or pest detected. Your crop appears healthy.',
+                  TranslatedText(_translatedActionPreview ?? 'No disease or pest detected. Your crop appears healthy.',
                       style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withValues(alpha: 0.9))),
                 const SizedBox(height: 24),
                 // Language & TTS row
@@ -607,13 +653,14 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                             isExpanded: true,
                             items: _supportedLanguages.map((lang) => DropdownMenuItem<String>(
                               value: lang['code'],
-                              child: Text(lang['name']!, style: GoogleFonts.inter(
+                              child: TranslatedText(lang['name']!, style: GoogleFonts.inter(
                                   color: _selectedLanguage == lang['code'] ? Colors.white : AppTheme.onSurface),
                                   overflow: TextOverflow.ellipsis),
                             )).toList(),
                             onChanged: (val) {
                               if (val != null) {
                                 setState(() => _selectedLanguage = val);
+                                _localLangState.changeLanguage(val); // This won't affect global because it's local instance!
                                 _translateContent();
                               }
                             },
@@ -628,7 +675,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                         icon: _isTranslating
                             ? const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                             : Icon(_isPlayingTts ? Icons.stop_rounded : Icons.volume_up_rounded, size: 18),
-                        label: Text(
+                        label: TranslatedText(
                           _isTranslating ? (_translatedTranslatingLabel ?? 'Translating...')
                               : (_isPlayingTts ? (_translatedStopButton ?? 'Stop') : (_translatedListenButton ?? 'Listen')),
                           style: const TextStyle(fontSize: 13), overflow: TextOverflow.ellipsis),
@@ -718,7 +765,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                 ));
               },
               icon: const Icon(Icons.chat_bubble_rounded, color: Colors.white, size: 18),
-              label: const Text('Ask AI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+              label: const TranslatedText('Ask AI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
               style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12)),
             ),
           ),
@@ -736,7 +783,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                   ));
                 },
                 icon: const Icon(Icons.history_rounded, color: Colors.white, size: 18),
-                label: const Text('Monitor', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                label: const TranslatedText('Monitor', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
                 style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 12)),
               ),
             ),
@@ -809,12 +856,12 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TranslatedText(
                               'ANALYZED CROP',
                               style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white70, letterSpacing: 1.5),
                             ),
                             const SizedBox(height: 4),
-                            Text(
+                            TranslatedText(
                               widget.resultData?['crop_name'] ?? 'Wheat Field',
                               style: GoogleFonts.manrope(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
@@ -830,12 +877,12 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Text(
+                              TranslatedText(
                                 'AI CONFIDENCE',
                                 style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.white70, letterSpacing: 1.0),
                               ),
                               const SizedBox(height: 2),
-                              Text(
+                              TranslatedText(
                                 widget.resultData != null ? '${((widget.resultData!['confidence'] ?? 0.984) * 100).toStringAsFixed(1)}%' : '98.4%',
                                 style: GoogleFonts.robotoMono(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.greenAccent),
                               ),
@@ -896,7 +943,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                         color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
+                      child: TranslatedText(
                         _translatedSeverityLabel ?? (isHealthy ? 'ALL CLEAR' : 'DETECTED ${severity.toUpperCase()}'),
                         style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 1.5),
                       ),
@@ -905,7 +952,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text(
+                TranslatedText(
                   _translatedDiseaseName ?? label,
                   style: GoogleFonts.manrope(fontSize: 32, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1),
                 ),
@@ -913,7 +960,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                 
 
                 if (isHealthy)
-                  Text(
+                  TranslatedText(
                     _translatedActionPreview ?? 'No disease or pest detected. Your crop appears healthy.',
                     style: GoogleFonts.inter(fontSize: 14, color: Colors.white.withValues(alpha: 0.9)),
                   ),
@@ -940,7 +987,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                               items: _supportedLanguages.map((lang) {
                                 return DropdownMenuItem<String>(
                                   value: lang['code'],
-                                  child: Text(
+                                  child: TranslatedText(
                                     lang['name']!,
                                     style: GoogleFonts.inter(
                                       color: _selectedLanguage == lang['code'] ? Colors.white : AppTheme.onSurface,
@@ -952,6 +999,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                               onChanged: (val) {
                                 if (val != null) {
                                   setState(() => _selectedLanguage = val);
+                                  _localLangState.changeLanguage(val);
                                   _translateContent();
                                 }
                               },
@@ -969,7 +1017,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                                   child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                 )
                               : Icon(_isPlayingTts ? Icons.stop_rounded : Icons.volume_up_rounded, size: 18),
-                          label: Text(
+                          label: TranslatedText(
                             _isTranslating 
                               ? (_translatedTranslatingLabel ?? 'Translating...') 
                               : (_isPlayingTts ? (_translatedStopButton ?? 'Stop') : (_translatedListenButton ?? 'Listen')),
@@ -1002,7 +1050,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        TranslatedText(
           _translatedIpmHeader ?? 'TREATMENT & MANAGEMENT (IPM)',
           style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant, fontSize: 12, fontWeight: FontWeight.w800, letterSpacing: 1.2),
         ),
@@ -1016,7 +1064,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                 children: [
                   const CircularProgressIndicator(color: AppTheme.primary),
                   const SizedBox(height: 16),
-                  Text('Generating personalized treatment...', style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant, fontSize: 13)),
+                  TranslatedText('Generating personalized treatment...', style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant, fontSize: 13)),
                 ],
               ),
             ),
@@ -1028,7 +1076,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
             child: Row(children: [
               const Icon(Icons.info_outline, color: AppTheme.onSurfaceVariant),
               const SizedBox(width: 12),
-              Expanded(child: Text('Treatment plan unavailable for this scan.', style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant))),
+              Expanded(child: TranslatedText('Treatment plan unavailable for this scan.', style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant))),
             ]),
           )
         else ...(() {
@@ -1106,7 +1154,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                 child: Icon(icon, color: color, size: 18),
               ),
               const SizedBox(width: 12),
-              Text(title, style: GoogleFonts.manrope(color: color, fontSize: 15, fontWeight: FontWeight.bold)),
+              TranslatedText(title, style: GoogleFonts.manrope(color: color, fontSize: 15, fontWeight: FontWeight.bold)),
             ],
           ),
           children: items.map((item) => Padding(
@@ -1121,7 +1169,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                   decoration: BoxDecoration(color: color.withValues(alpha: 0.6), shape: BoxShape.circle),
                 ),
                 Expanded(
-                  child: Text(
+                  child: TranslatedText(
                     item, 
                     style: GoogleFonts.inter(color: AppTheme.onSurface, fontSize: 14, height: 1.5, fontWeight: FontWeight.w500),
                   ),
@@ -1148,7 +1196,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
         children: [
           Icon(isAlert ? Icons.warning_amber_rounded : Icons.check_circle_outline, color: isAlert ? AppTheme.error : AppTheme.primary, size: 20),
           const SizedBox(width: 12),
-          Expanded(child: Text(text, style: GoogleFonts.inter(color: isAlert ? AppTheme.onErrorContainer : AppTheme.onPrimaryContainer, fontSize: 13, fontWeight: FontWeight.w600))),
+          Expanded(child: TranslatedText(text, style: GoogleFonts.inter(color: isAlert ? AppTheme.onErrorContainer : AppTheme.onPrimaryContainer, fontSize: 13, fontWeight: FontWeight.w600))),
         ],
       ),
     );
@@ -1190,7 +1238,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                       );
                     },
                     icon: const Icon(Icons.chat_bubble_rounded, color: AppTheme.primary, size: 16),
-                    label: Text('Ask AI', style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 13)),
+                    label: TranslatedText('Ask AI', style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 13)),
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
@@ -1211,12 +1259,12 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please save the diagnosis first before monitoring.')),
+                          const SnackBar(content: TranslatedText('Please save the diagnosis first before monitoring.')),
                         );
                       }
                     },
                     icon: const Icon(Icons.history_rounded, color: AppTheme.primary, size: 16),
-                    label: Text('Monitor', style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 13)),
+                    label: TranslatedText('Monitor', style: GoogleFonts.inter(color: AppTheme.primary, fontWeight: FontWeight.bold, fontSize: 13)),
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: AppTheme.primary.withValues(alpha: 0.1),
@@ -1230,7 +1278,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
                   child: ElevatedButton.icon(
                     onPressed: _requestExpertReviewAndNavigate,
                     icon: const Icon(Icons.support_agent_rounded, color: Colors.white, size: 16),
-                    label: Text('Consult Expert', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+                    label: TranslatedText('Consult Expert', style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: AppTheme.primary,
@@ -1297,7 +1345,7 @@ class _DetectionResultScreenState extends State<DetectionResultScreen> with Tick
               color: isSelected ? AppTheme.onSecondaryContainer : AppTheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 4),
-            Text(
+            TranslatedText(
               label,
               style: TextStyle(
                 fontSize: 10,

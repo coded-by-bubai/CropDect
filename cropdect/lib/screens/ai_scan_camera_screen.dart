@@ -15,6 +15,7 @@ import 'dashboard_screen.dart';
 import 'detection_result_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/services.dart';
+import '../widgets/translated_text.dart';
 
 class AIScanCameraScreen extends StatefulWidget {
   const AIScanCameraScreen({Key? key}) : super(key: key);
@@ -105,7 +106,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
           });
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Camera permission is required.'),
+              content: const TranslatedText('Camera permission is required.'),
               action: SnackBarAction(label: 'Settings', onPressed: () => openAppSettings()),
             ),
           );
@@ -156,7 +157,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
             _isCameraInitialized = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Camera initialization failed for all available cameras.')),
+            const SnackBar(content: TranslatedText('Camera initialization failed for all available cameras.')),
           );
         }
       } else {
@@ -165,7 +166,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
             _isCameraInitialized = false;
           });
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No camera detected. Please use the Gallery.')),
+            const SnackBar(content: TranslatedText('No camera detected. Please use the Gallery.')),
           );
         }
       }
@@ -173,7 +174,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
       debugPrint('Error initializing camera: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Camera initialization failed: $e')),
+          SnackBar(content: TranslatedText('Camera initialization failed: $e')),
         );
       }
     }
@@ -292,10 +293,10 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
             children: [
               Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 28),
               const SizedBox(width: 12),
-              Text('Invalid Photo', style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 20)),
+              TranslatedText('Invalid Photo', style: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 20)),
             ],
           ),
-          content: Text(
+          content: TranslatedText(
             'The system could not clearly detect a plant or crop. Please capture or upload a clear photo of a crop leaf or diseased area.\n\nIf this is a crop, please try capturing it from a different angle or moving closer.',
             style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant, fontSize: 14, height: 1.5),
           ),
@@ -309,7 +310,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                 foregroundColor: Colors.orange,
                 textStyle: GoogleFonts.inter(fontWeight: FontWeight.bold),
               ),
-              child: const Text('Scan Anyway'),
+              child: const TranslatedText('Scan Anyway'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
@@ -317,7 +318,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                 foregroundColor: AppTheme.primary,
                 textStyle: GoogleFonts.inter(fontWeight: FontWeight.bold),
               ),
-              child: const Text('OK'),
+              child: const TranslatedText('OK'),
             ),
           ],
         );
@@ -389,13 +390,13 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
     } on DioException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_extractErrorMessage(e.response?.data))),
+          SnackBar(content: TranslatedText(_extractErrorMessage(e.response?.data))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error picking image: $e')),
+          SnackBar(content: TranslatedText('Error picking image: $e')),
         );
       }
     } finally {
@@ -416,7 +417,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
       image = await _cameraController!.takePicture();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to capture photo: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: TranslatedText('Failed to capture photo: $e')));
       }
       return;
     }
@@ -496,13 +497,13 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
     } on DioException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_extractErrorMessage(e.response?.data))),
+          SnackBar(content: TranslatedText(_extractErrorMessage(e.response?.data))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error picking image: $e')),
+          SnackBar(content: TranslatedText('Error picking image: $e')),
         );
       }
     } finally {
@@ -557,13 +558,13 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
     } on DioException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_extractErrorMessage(e.response?.data))),
+          SnackBar(content: TranslatedText(_extractErrorMessage(e.response?.data))),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error uploading image: $e')),
+          SnackBar(content: TranslatedText('Error uploading image: $e')),
         );
       }
     } finally {
@@ -703,7 +704,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                     )
                   : (_cameras != null && _cameras!.isEmpty)
                     ? const Center(
-                        child: Text(
+                        child: TranslatedText(
                           'No camera detected. Please use the Gallery option below.',
                           style: TextStyle(color: Colors.white, fontSize: 16),
                           textAlign: TextAlign.center,
@@ -764,7 +765,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                             children: const [
                               Icon(Icons.info_outline, color: Colors.white, size: 18),
                               SizedBox(width: 8),
-                              Text(
+                              TranslatedText(
                                 'cropdect',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -790,26 +791,26 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                               children: const [
                                 Icon(Icons.tips_and_updates_rounded, color: AppTheme.primary),
                                 SizedBox(width: 8),
-                                Text('Scanning Tips', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                TranslatedText('Scanning Tips', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                               ],
                             ),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
-                                Text('1. Hold camera 10-15 cm away from the damaged leaf or pest.'),
+                                TranslatedText('1. Hold camera 10-15 cm away from the damaged leaf or pest.'),
                                 SizedBox(height: 8),
-                                Text('2. Ensure bright, natural sunlight without strong shadows.'),
+                                TranslatedText('2. Ensure bright, natural sunlight without strong shadows.'),
                                 SizedBox(height: 8),
-                                Text('3. Select the accurate Crop Growth Stage below before scanning.'),
+                                TranslatedText('3. Select the accurate Crop Growth Stage below before scanning.'),
                                 SizedBox(height: 8),
-                                Text('4. If diagnosis is uncertain, submit for Expert Agronomist Review from results screen.'),
+                                TranslatedText('4. If diagnosis is uncertain, submit for Expert Agronomist Review from results screen.'),
                               ],
                             ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(ctx),
-                                child: const Text('Got It', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                                child: const TranslatedText('Got It', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary)),
                               ),
                             ],
                           ),
@@ -993,9 +994,9 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                         ),
                         child: Row(
                           children: [
-                            Text(emoji, style: const TextStyle(fontSize: 14)),
+                            TranslatedText(emoji, style: const TextStyle(fontSize: 14)),
                             const SizedBox(width: 8),
-                            Text(
+                            TranslatedText(
                               stage,
                               style: TextStyle(
                                 fontSize: 13,
@@ -1108,7 +1109,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                                     ),
-                                    child: Text(
+                                    child: TranslatedText(
                                       '${_currentZoom.toStringAsFixed(1)}x',
                                       style: const TextStyle(
                                         color: Colors.white,
@@ -1191,7 +1192,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                           children: [
                             const Icon(Icons.center_focus_strong, color: AppTheme.primaryFixed, size: 18),
                             const SizedBox(width: 8),
-                            Text(
+                            TranslatedText(
                               'Center leaf in frame',
                               style: GoogleFonts.inter(
                                 color: Colors.white,
@@ -1252,7 +1253,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                           ],
                         ),
                         const SizedBox(height: 40),
-                        const Text(
+                        const TranslatedText(
                           'Analyzing Crop...',
                           style: TextStyle(
                             color: Colors.white,
@@ -1274,7 +1275,7 @@ class _AIScanCameraScreenState extends State<AIScanCameraScreen> with SingleTick
                             children: [
                               const Icon(Icons.auto_awesome, color: Colors.amberAccent, size: 16),
                               const SizedBox(width: 8),
-                              Text(
+                              TranslatedText(
                                 'AI is checking for diseases & pests',
                                 style: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.95),

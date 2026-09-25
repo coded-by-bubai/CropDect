@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import '../theme.dart';
 import '../api_client.dart';
+import '../widgets/translated_text.dart';
 
 class ChatScreen extends StatefulWidget {
   final String? initialQuery;
@@ -212,7 +213,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('AI Agronomist',
+                TranslatedText('AI Agronomist',
                     style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                     overflow: TextOverflow.ellipsis),
                 Row(
@@ -224,7 +225,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                       decoration: const BoxDecoration(color: Colors.greenAccent, shape: BoxShape.circle),
                     ),
                     Flexible(
-                      child: Text('RAG-powered',
+                      child: TranslatedText('RAG-powered',
                           style: GoogleFonts.inter(fontSize: 10, color: AppTheme.onSurfaceVariant),
                           overflow: TextOverflow.ellipsis),
                     ),
@@ -251,7 +252,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 else
                   const SizedBox(width: 16),
                 const SizedBox(width: 8),
-                Text(lang['label']!,
+                TranslatedText(lang['label']!,
                     style: GoogleFonts.inter(
                         fontWeight: _selectedLanguage == lang['code'] ? FontWeight.bold : FontWeight.normal)),
               ],
@@ -356,7 +357,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                         onTap: () {
                           Clipboard.setData(ClipboardData(text: msg['text'] as String));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Copied to clipboard'), duration: Duration(seconds: 1)),
+                            const SnackBar(content: TranslatedText('Copied to clipboard'), duration: Duration(seconds: 1)),
                           );
                         },
                         child: Padding(
@@ -364,7 +365,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                           child: Icon(Icons.copy_rounded, size: 12, color: AppTheme.onSurfaceVariant.withValues(alpha: 0.6)),
                         ),
                       ),
-                    Text(
+                    TranslatedText(
                       msg['time'] as String? ?? '',
                       style: GoogleFonts.inter(fontSize: 10, color: AppTheme.onSurfaceVariant.withValues(alpha: 0.5)),
                     ),
@@ -389,7 +390,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                         children: [
                           Icon(Icons.book_rounded, size: 10, color: AppTheme.secondary.withValues(alpha: 0.8)),
                           const SizedBox(width: 4),
-                          Text(s,
+                          TranslatedText(s,
                               style: GoogleFonts.inter(
                                   fontSize: 10,
                                   color: AppTheme.onSurface.withValues(alpha: 0.7),
@@ -475,7 +476,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         itemCount: _suggestedQuestions.length,
         separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, i) => ActionChip(
-          label: Text(_suggestedQuestions[i],
+          label: TranslatedText(_suggestedQuestions[i],
               style: GoogleFonts.inter(fontSize: 12, color: AppTheme.primary, fontWeight: FontWeight.w500)),
           backgroundColor: AppTheme.surfaceContainerLowest,
           side: BorderSide(color: AppTheme.outlineVariant.withValues(alpha: 0.5)),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../theme.dart';
 import '../api_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,6 +12,7 @@ import 'admin_setup_screen.dart';
 import 'package:provider/provider.dart';
 import '../api_client.dart';
 import '../main.dart';
+import '../widgets/translated_text.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -69,6 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           // Notify auth state with role
           Provider.of<AuthState>(context, listen: false).login(token, resolvedRole);
+
+          // Register FCM token with backend for production push notifications
+          FirebaseMessaging.instance.getToken().then((fcmToken) {
+            if (fcmToken != null) {
+              apiClient.post('/users/me/fcm-token', data: {'token': fcmToken})
+                  .catchError((_) {}); // Fire-and-forget, don't block navigation
+            }
+          });
 
           if (resolvedRole == 'ADMIN') {
             Navigator.pushReplacement(
@@ -178,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Text(
+                  TranslatedText(
                     _loginRole == 'ADMIN'
                         ? 'System Admin Portal'
                         : _loginRole == 'EXPERT'
@@ -192,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  Text(
+                  TranslatedText(
                     _loginRole == 'ADMIN'
                         ? 'Sign in to oversee all farmers & experts, review work activity, and audit operations.'
                         : _loginRole == 'EXPERT' 
@@ -246,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: _loginRole == 'FARMER' ? Colors.white : AppTheme.onSurfaceVariant,
                                   ),
                                   const SizedBox(width: 4),
-                                  Text(
+                                  TranslatedText(
                                     'Farmer',
                                     style: TextStyle(
                                       color: _loginRole == 'FARMER' ? Colors.white : AppTheme.onSurfaceVariant,
@@ -294,7 +304,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: _loginRole == 'EXPERT' ? Colors.white : AppTheme.onSurfaceVariant,
                                   ),
                                   const SizedBox(width: 4),
-                                  Text(
+                                  TranslatedText(
                                     'Expert',
                                     style: TextStyle(
                                       color: _loginRole == 'EXPERT' ? Colors.white : AppTheme.onSurfaceVariant,
@@ -342,7 +352,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     color: _loginRole == 'ADMIN' ? Colors.white : AppTheme.onSurfaceVariant,
                                   ),
                                   const SizedBox(width: 4),
-                                  Text(
+                                  TranslatedText(
                                     'Admin',
                                     style: TextStyle(
                                       color: _loginRole == 'ADMIN' ? Colors.white : AppTheme.onSurfaceVariant,
@@ -375,7 +385,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Icon(Icons.error_outline_rounded, color: AppTheme.error, size: 18),
                             const SizedBox(width: 8),
                             Expanded(
-                              child: Text(
+                              child: TranslatedText(
                                 _errorMessage,
                                 style: const TextStyle(color: AppTheme.error, fontSize: 12),
                               ),
@@ -440,7 +450,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 24,
                               child: CircularProgressIndicator(color: AppTheme.onSecondaryContainer),
                             )
-                          : const Text(
+                          : const TranslatedText(
                               'Sign In',
                               style: TextStyle(
                                 color: AppTheme.onSecondaryContainer,
@@ -456,7 +466,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
 
-                      const Text(
+                      const TranslatedText(
                         "Don't have an account? ",
                         style: TextStyle(color: AppTheme.onSurfaceVariant),
                       ),
@@ -467,7 +477,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialPageRoute(builder: (context) => const SignupScreen()),
                           );
                         },
-                        child: const Text(
+                        child: const TranslatedText(
                           'Sign Up',
                           style: TextStyle(
                             color: AppTheme.primary,

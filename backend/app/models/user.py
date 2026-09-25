@@ -25,5 +25,6 @@ class User(Base):
     role: Mapped[UserRole] = mapped_column(SQLEnum(UserRole), default=UserRole.FARMER)
     preferred_language: Mapped[str] = mapped_column(String(10), default="en")
     status: Mapped[UserStatus] = mapped_column(SQLEnum(UserStatus), default=UserStatus.ACTIVE)
+    fcm_token: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
 
     farms = relationship("Farm", back_populates="owner", cascade="all, delete-orphan")

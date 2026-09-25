@@ -21,6 +21,7 @@ import 'hotspot_map_screen.dart';
 import 'expert_home_screen.dart';
 import 'admin_dashboard_screen.dart';
 import 'package:geolocator/geolocator.dart';
+import '../widgets/translated_text.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,6 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
 
   User? _user;
+  String _selectedLanguage = 'English';
   List<Farm> _farms = [];
   List<Diagnosis> _diagnostics = [];
 
@@ -122,6 +124,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _showLanguagePicker() {
+    final Map<String, String> languages = {
+      'en': 'English',
+      'hi': 'हिंदी (Hindi)',
+      'bn': 'বাংলা (Bengali)',
+      'mr': 'मराठी (Marathi)',
+      'te': 'తెలుగు (Telugu)'
+    };
+    
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: const BoxDecoration(
+          color: AppTheme.surface,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        padding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(color: AppTheme.outlineVariant, borderRadius: BorderRadius.circular(2)),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TranslatedText('Select App Language', style: GoogleFonts.manrope(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
+            const SizedBox(height: 16),
+            ...languages.entries.map((entry) {
+              final langCode = entry.key;
+              final langName = entry.value;
+              final isSelected = context.watch<LanguageState>().currentLanguage == langCode;
+              return ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Icon(
+                  isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+                  color: isSelected ? AppTheme.primary : AppTheme.outline,
+                ),
+                title: TranslatedText(
+                  langName,
+                  style: GoogleFonts.inter(
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: AppTheme.onSurface,
+                  ),
+                ),
+                onTap: () {
+                  context.read<LanguageState>().changeLanguage(langCode);
+                  Navigator.pop(ctx);
+                  _showSnack('Language updated! Navigation and core screens will now translate dynamically.');
+                },
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _editFarm(Farm farm) async {
     final nameCtrl = TextEditingController(text: farm.name);
     final areaCtrl = TextEditingController(text: farm.area.toString());
@@ -185,7 +249,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Manage Field / Farm', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
+                  const Expanded(
+                    child: TranslatedText(
+                      'Manage Field / Farm',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppTheme.onSurface),
+                    ),
+                  ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline_rounded, color: AppTheme.error),
                     tooltip: 'Delete Field',
@@ -218,7 +287,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 items: ['Loamy', 'Clay', 'Sandy', 'Silty', 'Peaty', 'Saline']
-                    .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                    .map((s) => DropdownMenuItem(value: s, child: TranslatedText(s)))
                     .toList(),
                 onChanged: (val) {
                   if (val != null) setSheetState(() => selectedSoil = val);
@@ -254,7 +323,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               OutlinedButton.icon(
                 onPressed: () => fetchLocation(setSheetState),
                 icon: const Icon(Icons.my_location_rounded, size: 18),
-                label: const Text('Use Current GPS Location'),
+                label: const TranslatedText('Use Current GPS Location'),
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 44),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -270,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     backgroundColor: AppTheme.primary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Save Changes', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: const TranslatedText('Save Changes', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -366,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showSnack(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg),
+      content: TranslatedText(msg),
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ));
@@ -456,7 +525,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       child: Center(
-                        child: Text(
+                        child: TranslatedText(
                           (_user?.name?.isNotEmpty == true) ? _user!.name![0].toUpperCase() : 'U',
                           style: GoogleFonts.manrope(
                             fontSize: 36,
@@ -483,7 +552,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 14),
                 // Name
-                Text(
+                TranslatedText(
                   _user?.name ?? 'Farmer',
                   style: GoogleFonts.manrope(
                     fontSize: 22,
@@ -493,7 +562,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 4),
                 // Phone / email
-                Text(
+                TranslatedText(
                   _user?.phone ?? _user?.email ?? '',
                   style: GoogleFonts.inter(
                     fontSize: 13,
@@ -514,7 +583,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       const Icon(Icons.verified_rounded, size: 14, color: AppTheme.secondaryContainer),
                       const SizedBox(width: 6),
-                      Text(
+                      TranslatedText(
                         _user?.role == 'EXPERT'
                             ? 'Agricultural Expert'
                             : (_user?.role == 'ADMIN'
@@ -542,7 +611,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Row(
             children: [
               const SizedBox(width: 4),
-              Text(
+              TranslatedText(
                 _user?.name ?? 'Profile',
                 style: GoogleFonts.manrope(
                   fontSize: 18,
@@ -606,11 +675,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 8),
-          Text(value,
+          TranslatedText(value,
             style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w800, color: color),
           ),
           const SizedBox(height: 2),
-          Text(label,
+          TranslatedText(label,
             style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: color.withValues(alpha: 0.7)),
           ),
         ],
@@ -619,7 +688,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildSectionLabel(String text) {
-    return Text(
+    return TranslatedText(
       text,
       style: GoogleFonts.inter(
         fontSize: 11,
@@ -670,11 +739,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: const Icon(Icons.landscape_rounded, color: Color(0xFF276C00), size: 22),
           ),
-          title: Text(
+          title: TranslatedText(
             farm.name,
             style: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 15, color: AppTheme.onSurface),
           ),
-          subtitle: Text(
+          subtitle: TranslatedText(
             '${farm.area.toStringAsFixed(1)} ha · ${farm.soilType ?? 'Unknown soil'}',
             style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
           ),
@@ -777,13 +846,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          title: Text(
+          title: TranslatedText(
             displayLabel,
             style: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 14, color: AppTheme.onSurface),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          subtitle: Text(
+          subtitle: TranslatedText(
             '$displayCropName · ${(d.confidence * 100).toInt()}% conf\n${d.createdAt.toString().substring(0, 10)}',
             style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
           ),
@@ -796,7 +865,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: severityColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
+                child: TranslatedText(
                   d.severity.toUpperCase(),
                   style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: severityColor),
                 ),
@@ -863,6 +932,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onTap: _editProfile,
         ),
         const SizedBox(height: 10),
+        Consumer<LanguageState>(
+          builder: (context, languageState, child) {
+            final Map<String, String> languages = {
+              'en': 'English', 'hi': 'हिंदी (Hindi)', 'bn': 'বাংলা (Bengali)', 'mr': 'मराठी (Marathi)', 'te': 'తెలుగు (Telugu)'
+            };
+            return _buildActionTile(
+              icon: Icons.language_rounded,
+              label: 'App Language',
+              subtitle: 'Current: ${languages[languageState.currentLanguage] ?? 'English'}',
+              iconBg: const Color(0xFFFFF3E0),
+              iconColor: Colors.orange.shade800,
+              onTap: _showLanguagePicker,
+            );
+          },
+        ),
+        const SizedBox(height: 10),
         _buildActionTile(
           icon: Icons.logout_rounded,
           label: 'Logout',
@@ -923,7 +1008,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  TranslatedText(
                     label,
                     style: GoogleFonts.manrope(
                       fontSize: 15,
@@ -932,7 +1017,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Text(
+                  TranslatedText(
                     subtitle,
                     style: GoogleFonts.inter(fontSize: 12, color: AppTheme.onSurfaceVariant),
                   ),
@@ -959,7 +1044,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Icon(icon, size: 36, color: AppTheme.onSurfaceVariant.withValues(alpha: 0.4)),
           const SizedBox(height: 10),
-          Text(
+          TranslatedText(
             message,
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(fontSize: 13, color: AppTheme.onSurfaceVariant),
@@ -1011,7 +1096,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Icon(icon, color: isSelected ? AppTheme.onSecondaryContainer : AppTheme.onSurfaceVariant.withValues(alpha: 0.7)),
             const SizedBox(height: 4),
-            Text(label, style: GoogleFonts.inter(
+            TranslatedText(label, style: GoogleFonts.inter(
               fontSize: 10,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.5,
@@ -1059,7 +1144,7 @@ class _EditProfileSheet extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
+                child: TranslatedText(
                   'Edit Profile',
                   style: GoogleFonts.manrope(fontSize: 22, fontWeight: FontWeight.w700, color: AppTheme.onSurface),
                 ),
@@ -1089,7 +1174,7 @@ class _EditProfileSheet extends StatelessWidget {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         elevation: 0,
                       ),
-                      child: Text(
+                      child: TranslatedText(
                         'Save Changes',
                         style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white),
                       ),
@@ -1108,7 +1193,7 @@ class _EditProfileSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5, color: AppTheme.onSurfaceVariant)),
+        TranslatedText(label, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5, color: AppTheme.onSurfaceVariant)),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
@@ -1143,19 +1228,19 @@ class _ConfirmDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: AppTheme.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      title: Text(title,
+      title: TranslatedText(title,
         style: GoogleFonts.manrope(
           fontWeight: FontWeight.w700,
           color: isDestructive ? AppTheme.error : AppTheme.onSurface,
         ),
       ),
-      content: Text(message,
+      content: TranslatedText(message,
         style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: Text('Cancel', style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
+          child: TranslatedText('Cancel', style: GoogleFonts.inter(color: AppTheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
         ),
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
@@ -1164,7 +1249,7 @@ class _ConfirmDialog extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             elevation: 0,
           ),
-          child: Text(confirmLabel,
+          child: TranslatedText(confirmLabel,
             style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w700),
           ),
         ),

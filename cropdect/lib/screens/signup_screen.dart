@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 import 'package:dio/dio.dart';
 import '../api_client.dart';
+import '../widgets/translated_text.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -46,7 +47,7 @@ class _SignupScreenState extends State<SignupScreen> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Registration successful! Please login.')),
+            const SnackBar(content: TranslatedText('Registration successful! Please login.')),
           );
           Navigator.pop(context);
         }
@@ -133,7 +134,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      Text(
+                      TranslatedText(
                         'Create Account',
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
                               color: AppTheme.primary,
@@ -142,7 +143,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
-                      Text(
+                      TranslatedText(
                         'Join to monitor your fields.',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: AppTheme.onSurfaceVariant,
@@ -160,7 +161,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             color: AppTheme.errorContainer,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
+                          child: TranslatedText(
                             _errorMessage,
                             style: TextStyle(color: AppTheme.onErrorContainer),
                             textAlign: TextAlign.center,
@@ -171,7 +172,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          const TranslatedText(
                             'SELECT ACCOUNT ROLE',
                             style: TextStyle(
                               fontSize: 10,
@@ -307,7 +308,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               : const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
+                                    TranslatedText(
                                       'Sign Up',
                                       style: TextStyle(
                                         fontSize: 16,
@@ -327,7 +328,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
+                          const TranslatedText(
                             "Already have an account? ",
                             style: TextStyle(color: AppTheme.onSurfaceVariant),
                           ),
@@ -340,7 +341,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               minimumSize: Size.zero,
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
-                            child: const Text(
+                            child: const TranslatedText(
                               'Sign In',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -403,7 +404,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 size: 24,
               ),
               const SizedBox(height: 6),
-              Text(
+              TranslatedText(
                 title,
                 style: TextStyle(
                   fontSize: 11,
